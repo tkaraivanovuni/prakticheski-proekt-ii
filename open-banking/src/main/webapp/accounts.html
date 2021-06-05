@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OpenBanking</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link rel="stylesheet" href="./styles/style.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link
+	href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap"
+	rel="stylesheet">
+
+<script src="js/main.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+	integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script>
+
+</head>
+<body style="background-color: rgb(220, 220, 220)">
+
+	<div class="accounts-page">
+
+		<div class="container">
+
+			<header>
+
+				<nav class="navbar navbar-expand-lg navbar-light bg-white mb-1">
+					<a class="navbar-brand" href="index.html"> <img
+						src="./assets/AppIcon.png" alt="OpenBanking" class="img-fluid">
+					</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse"
+						data-target="#navbarSupportedContent"
+						aria-controls="navbarSupportedContent" aria-expanded="false"
+						aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+						<ul class="nav navbar-nav navbar-right mr-auto ml-auto">
+							<li>
+								<h1>
+									<span>OpenBanking</span>
+								</h1>
+							</li>
+						</ul>
+
+						<ul class="nav navbar-nav navbar-right ml-auto">
+							<li class="nav-item active"><a class="nav-link" href="#"
+								id="accounts-logout">Logout </a></li>
+						</ul>
+					</div>
+				</nav>
+
+			</header>
+
+			<div class="container">
+
+				<div class="accounts-container p-2">
+
+					<div class="panel panel-default">
+
+						<div class="panel-heading">
+
+							<div class="row">
+								<div class="col-3">
+									<h3 class="panel-title">Find Bank Account</h3>
+								</div>
+
+								<div class="col-4 ml-auto">
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="search-label">Search
+												by Bank</span>
+										</div>
+										<input type="text" class="form-control"
+											placeholder="Bank name" aria-label="Bank name"
+											aria-describedby="seach-label" id="search-box">
+									</div>
+								</div>
+
+
+							</div>
+
+						</div>
+
+						<div class="account-template row p-1 m-1 align-items-center"
+							id="account-template">
+
+							<div class="row">
+
+								<div class="col-1 border-right border-left px-auto"
+									style="display: none">
+									<h4 id="bank-field">Bank Name</h4>
+								</div>
+
+								<div class="col-3 border-right border-left px-auto">
+									<h4 id="account-product-field">Product</h4>
+								</div>
+
+								<div class="col-3 border-right border-left px-auto">
+									<h4 id="account-number-field">Account Number</h4>
+								</div>
+
+								<div class="col-1 border-right border-left px-auto">
+									<h4 id="currency-field">Currency</h4>
+								</div>
+
+								<div class="col-4 border-right border-left px-auto">
+									<div class="row d-flex justify-content-end">
+
+										<button type="button" class="btn btn-secondary mx-2"
+											id="account-details-button">Balance</button>
+
+
+										<button type="button" class="btn btn-info mx-2"
+											id="save-account-button">Save</button>
+
+										<div class="dropdown">
+											<button class="btn btn-secondary dropdown-toggle"
+												type="button" id="dropdownMenuButton" data-toggle="dropdown"
+												aria-haspopup="true" aria-expanded="false">Pay</button>
+
+											<form class="dropdown-menu p-1"
+												aria-labelledby="dropdownMenuButton">
+												<div class="form-group">
+													<label for="amount-input">Amount</label> <input type="text"
+														class="form-control" id="amount-input" placeholder="0.00">
+												</div>
+												<div class="form-group">
+													<label for="creditor-iban-input">Receiver IBAN</label> <input
+														type="text" class="form-control" id="creditor-iban-input"
+														placeholder="IBAN">
+												</div>
+												<div class="form-group">
+													<label for="creditor-name-input">Receiver name</label> <input
+														type="text" class="form-control" id="creditor-name-input"
+														placeholder="Name">
+												</div>
+												<button type="button" class="btn btn-primary"
+													id="confirm-payment-button">Confirm</button>
+											</form>
+										</div>
+
+
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<hr>
+
+						<div class="bank-template row p-1 m-1 align-items-center"
+							id="bank-template">
+
+							<div class="row">
+
+								<div class="col-2 px-auto" style="display: none">
+									<h4 id="bank-id-field">ID</h4>
+								</div>
+
+								<div class="col-8 px-auto">
+									<h4 id="bank-name-field">Bank</h4>
+								</div>
+
+								<div class="col-2 px-auto">
+									<button type="button" class="btn btn-secondary mx-2"
+										id="check-bank-button" style="display: none">Check</button>
+								</div>
+
+							</div>
+
+						</div>
+
+						<ul class="list-group" id="banks-list">
+						</ul>
+
+						<hr>
+
+						<ul class="list-group" id="bank-accounts-list">
+						</ul>
+
+						<hr>
+
+						<h3>Saved Accounts</h3>
+
+						<ul class="list-group" id="saved-accounts-list">
+						</ul>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<img src="./assets/FooterGraph.png" alt="Footer" class="img-fluid">
+
+		</div>
+
+		<div class="modal" tabindex="-1" role="dialog" id="payment-modal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Make payment</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+						<form id="make-payment-form" action="payment" method="POST">
+							<div class="form-group">
+								<label for="add-bank-name">Bank name</label> <input
+									class="form-control" id="add-account-bank-name"
+									name="account-bank-name" placeholder="Bank name">
+							</div>
+							<div class="form-group">
+								<label for="add-account-number">Account Number</label> <input
+									class="form-control" id="add-account-number"
+									name="account-number" placeholder="Account Number">
+							</div>
+							<div class="form-group">
+								<label for="add-currency">Currency</label> <input
+									class="form-control" id="add-currency" name="currency"
+									placeholder="Currency">
+							</div>
+						</form>
+
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-secondary"
+							form="make-payment-form" id="confirm-payment">Confirm
+							Account</button>
+						<button type="button" class="btn btn-secondary"
+							id="close-payment-form" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+        
+        $(document).ready(function(){
+        	
+        	$('#add-bank-account-button').click(function(){
+                $('#add-account-modal').modal();
+            });
+        	
+        	$('#add-account-form').submit(function (e){
+       		  e.preventDefault();
+       		  
+       		  $.ajax({
+         			url: "/bank-account",
+         			method: "POST",
+         			data: {
+         				bank_name: $('#add-account-bank-name').val(),
+         				account_number: $('#add-account-number').val(),
+         				currency: $('#add-currency').val()
+         			},     				
+	   			}).done(function(data){
+	   				alert(data);
+	   				window.location.href = "accounts.html";
+	   			}).fail(function(data){
+	   				alert(data);
+	   			})
+       			
+       	  })
+       	  
+       	  $("#search-box").keyup(function(){
+        	   
+        	   $('#banks-list').empty();
+        	   
+        	   searchedBank = $("#search-box").val();
+        	   
+        	   $.ajax({
+        		   url: "/bank/filter?bank_name=" + searchedBank,
+        		   method: "GET",
+        		   success: function(data){
+        			   	data.forEach(function (bank){
+        				   showBank(bank.id, bank.bankName);
+        			   	})        			   
+        		   },fail: function(){
+   	    			  alert("Banks could not be displayed");
+        		   }
+        	   
+        	   })
+           })
+           
+           function displayAllBankAccounts(){
+      		  $.ajax({
+  	    		  url: "/bank-account/",
+  	    		  method: "GET",
+  	    		  success: function(data){
+  	    			  data.forEach(function (bank_account){
+  	    				  showSavedBankAccount(bank_account.bank_id, bank_account.accountNumber, bank_account.product, bank_account.currency);
+  	    			  });
+  	    		  },fail: function(){
+  	    			  alert("Accounts could not be displayed");
+  	    		  }
+      		  });
+      	    }
+      	 
+        	function showSavedBankAccount(bank, iban, product, currency){
+                var copiedBankAccount = $('#account-template').clone();
+            	  
+                copiedBankAccount.attr('id', '');
+                copiedBankAccount.find('#bank-field').text(bank);
+                copiedBankAccount.find('#account-number-field').text(iban);
+                copiedBankAccount.find('#account-product-field').text(product);
+                copiedBankAccount.find('#currency-field').text(currency);
+                copiedBankAccount.find('span').hide();
+                
+                copiedBankAccount.find('#confirm-payment-button').click(function() {
+                	console.log(bank);
+                	let amount = copiedBankAccount.find('#amount-input').val();
+                	console.log(amount);
+                	let creditorIban = copiedBankAccount.find('#creditor-iban-input').val();
+                	console.log(creditorIban);
+                	let creditorName = copiedBankAccount.find('#creditor-name-input').val();
+                	console.log(creditorName);
+                	sendPayment(bank, iban, currency, amount, creditorIban, creditorName);
+                })
+                
+                copiedBankAccount.find('#save-account-button').attr('id', 'delete-account-button');
+                copiedBankAccount.find('#delete-account-button').text("Delete");
+                copiedBankAccount.find('#delete-account-button').click(function() {
+                	$.ajax({
+        	    		  url: "/bank-account/" + iban,
+        	    		  method: "DELETE",
+        	    		  success: function(data){
+        	    			  alert("Account deleted!");
+        	    			  copiedBankAccount.hide();
+        	    		  },fail: function(){
+        	    			  alert("Accounts could not be deleted");
+        	    		  }
+            		  });
+                })
+               
+                $('#saved-accounts-list').prepend(copiedBankAccount);
+                
+                copiedBankAccount.show();
+                
+            }
+        	
+        	function retrieveBalance(bank, iban) {
+        		$.ajax({
+   	    		  url: "/balance?bank_id=" + bank + "&scope=ais.sandbox&state=return.html&iban=" + iban,
+   	    		  method: "GET",
+   	    		  complete: function(data){
+   	    			  if (data.status === 200) {
+   	    			  		let balance = (data.responseJSON.balances[0].balanceAmount.amount) + " " + (data.responseJSON.balances[0].balanceAmount.currency);
+   	    			  		alert(balance);
+   	    			  } else if (data.status === 307) {
+   	    				  window.open(data.responseText);
+   	    			  } else {
+   	    				  alert(data.status)
+   	    			  }
+   	    		  }
+       		  });
+        	}
+        	
+        	function saveAccount(bank, iban, product, currency) {
+        		$.ajax({
+         			url: "/bank-account?bank_id=" + bank + "&account_number=" + iban + "&product=" + product + "&currency=" + currency,
+         			method: "POST",     				
+	   			}).done(function(data){
+	   				alert(data);
+	   			}).fail(function(data){
+	   				alert(data);
+	   			})
+        	}
+        	
+        	function sendPayment(bank, iban, currency, amount, creditorIban, creditorName) {
+        		$.ajax({
+         			url: "/payment?bank_id=" + bank
+         					+ "&scope=ais.sandbox pis.sandbox&state=return.html&debitor_iban=" + iban 
+         					+ "&amount=" + amount + "&currency=" + currency
+         					+ "&creditor_iban=" + creditorIban + "&creditor_name=" + creditorName,
+         			method: "POST",     				
+	   				complete: function(data){
+	    			  if (data.status === 201) {
+	    			  		alert("Received! Transaction ID: " + data.responseJSON.paymentId);
+	    			  } else if (data.status === 307) {
+	    				  window.open(data.responseText);
+	    			  } else {
+	    				  alert(data.status)
+	    			  }
+	    		  }
+        		});
+        	}
+        	
+        	function showBankAccount(bank, iban, product, currency){
+                var copiedBankAccount = $('#account-template').clone();
+            	  
+                copiedBankAccount.attr('id', '');
+                copiedBankAccount.find('#bank-field').text(bank);
+                copiedBankAccount.find('#account-number-field').text(iban);
+                copiedBankAccount.find('#account-product-field').text(product);
+                copiedBankAccount.find('#currency-field').text(currency);
+                copiedBankAccount.find('span').hide();
+                
+                copiedBankAccount.find('#confirm-payment-button').click(function() {
+                	console.log(bank);
+                	let amount = copiedBankAccount.find('#amount-input').val();
+                	console.log(amount);
+                	let creditorIban = copiedBankAccount.find('#creditor-iban-input').val();
+                	console.log(creditorIban);
+                	let creditorName = copiedBankAccount.find('#creditor-name-input').val();
+                	console.log(creditorName);
+                	sendPayment(bank, iban, currency, amount, creditorIban, creditorName);
+                })
+                
+                copiedBankAccount.find('#save-account-button').click(function(){
+                	saveAccount(bank, iban, product, currency);
+                	$('#saved-accounts-list').prepend(copiedBankAccount);
+                })
+                
+                copiedBankAccount.find('#account-details-button').click(function(){
+                	retrieveBalance(bank, iban);
+                })
+                
+                $('#bank-accounts-list').prepend(copiedBankAccount);
+                
+                copiedBankAccount.show();
+                
+            }
+        	
+        	function retrieveAccounts(id) {
+        		 $.ajax({
+     	    		  url: "/account?bank_id=" + id + "&scope=ais.sandbox&state=return.html",
+     	    		  method: "GET",
+     	    		  complete: function(data){
+     	    			  if (data.status === 200) {
+     	    			  		data.responseJSON.accounts.forEach(function(bank_account) {
+     	    			  			showBankAccount(id, bank_account.iban, bank_account.product, bank_account.currency);
+     	    			  		});
+     	    			  } else if (data.status === 307) {
+     	    				  window.open(data.responseText);
+     	    			  } else {
+     	    				  alert(data.status)
+     	    			  }
+     	    		  }
+         		  });
+        	}
+        	
+        	function showBank(id, bank_name){
+                var copiedBank = $('#bank-template').clone();
+                
+                copiedBank.attr('id', '');
+                copiedBank.find('#bank-id-field').text(id);
+                copiedBank.find('#bank-name-field').text(bank_name);
+                copiedBank.find('#check-bank-button').show();
+                copiedBank.find('span').hide();
+                
+                copiedBank.find('button').click(function(){
+                	retrieveAccounts(id);
+                });
+
+                $('#banks-list').prepend(copiedBank);
+                
+                copiedBank.show();
+                
+            }
+        	
+        	$("#accounts-logout").on("click", function(){
+        		  logout();
+        	});
+        	
+        	displayAllBankAccounts();
+      		  
+      	  });
+        
+        </script>
+
+</body>
+</html>

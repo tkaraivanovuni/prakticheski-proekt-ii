@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OpenBanking</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="./styles/style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+		
+		<script src="js/main.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    </head>
+    <body style="background-color: rgb(220, 220, 220)">
+
+        <div class="profile-page">
+
+            <div class="container">
+
+                <header>
+                
+                    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-1">
+                        <a class="navbar-brand" href="#">
+                            <img src="./assets/AppIcon.png" alt="OpenBanking" class="img-fluid">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                        </button>
+                      
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                            <ul class="nav navbar-nav navbar-right mr-auto ml-auto">
+                                <li>
+                                    <h1><span>OpenBanking</span></h1>
+                                </li>
+                            </ul>
+
+                            <ul class="nav navbar-nav navbar-right ml-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="#" id="logout">Logout </a>
+                                </li>
+                            </ul>
+                        </div>
+                      </nav>
+                
+                </header>
+
+                <div class="container">
+
+                    <div class="row">
+
+                        <div class="col-4 p-1">
+
+                            <div class="profile-container p-2">
+
+                                <h3>Profile</h3>
+        
+                                <form id="profile-form">
+                                
+                                	<div class="row">
+                                        
+                                        <div class="form-group col-sm-8">
+                                            <label for="update-username">Username</label>
+                                            <input type="text" class="form-control" id="update-username" placeholder="Username" value="username">
+                                        </div>
+            
+                                    </div>
+                                    
+                                    <div class="row">
+                                        
+                                        <div class="form-group col-sm-8">
+                                            <label for="update-email">Email</label>
+                                            <input type="email" class="form-control" id="update-email" placeholder="example@gmail.com" value="example@gmail.com">
+                                        </div>
+            
+                                    </div>
+        
+                                    <div class="row">
+                                       <div class="form-group col-sm-6">
+                                           <label for="update-pass">Password</label>
+                                           <input type="password" class="form-control" id="update-password" placeholder="Password" value="">
+                                       </div>
+                                       <div class="form-group col-sm-6">
+                                           <label for="confirm-update-pass">Repeat Password</label>
+                                           <input type="password" class="form-control" id="confirm-update-password" placeholder="Repeat Password" value="">
+                                       </div>
+                                    </div>
+            
+                                </form>
+    
+                                <div class="panel-footer">
+                                    <button type="button" class="btn btn-secondary pull-right" id="update-info"> Update </button>
+                                </div>
+            
+                            </div>
+
+                        </div>
+        
+                        <div class="col-8 p-1">
+                        
+                        	<div class="image-container">
+
+              					<img src="./assets/AppLogo.png" alt="App Logo" class="mx-auto d-block img-fluid">
+
+            				</div>
+
+                            <div class="panel-footer">
+                                    <button type="button" class="btn btn-primary pull-right mt-5" id="accounts-button"> My Accounts </button>
+                            </div>
+        
+                        </div>
+    
+                    </div>
+
+                </div>
+
+                <img src="./assets/FooterGraph.png" alt="Footer" class="img-fluid">
+            
+            </div>
+
+        </div>
+        
+      
+
+      <script>
+      
+      $(document).ready(function(){
+    	  
+    	  function showCurrentUser(){
+    		  
+    		  $.ajax({
+    			  url: "/profile",
+    			  method: "GET",
+    			  success: function(data){
+    				  $("#update-username").val(data.username),
+    				  $("#update-email").val(data.email);
+    			  }
+    		  });
+    		  
+    	  }
+    	  
+    	  $("#update-info").on("click", function(){
+    		  
+    		   username = $("#update-username").val();
+    		   email = $("#update-email").val();
+    		   password = $("#update-password").val();
+    		   repeatPassword = $("#confirm-update-password").val();
+    		   
+    		  
+    		   $.ajax({
+    			  url: "/profile",
+    			  method: "PUT",
+    			  data: { username: username, email: email, password: password, repeatPassword: repeatPassword},
+    			  complete: function(data){
+    				  if(data.status == 200){
+    					  alert("Details have been changed!"),
+    					  showCurrentUser();
+    				  }else {
+    					  alert("Details could not be changed!")
+    				  }
+    				  
+    			  }
+    		   });
+    	  }); 
+    	  
+    	  $("#accounts-button").on("click", function() {
+    		  window.location.href = "accounts.html";
+    	  })
+    	  
+    	  $("#logout").on("click", function(){
+    		  logout();
+    	  });
+    	  
+    	  getAuthorization();
+    	  showCurrentUser();
+    	  
+      });
+    	  
+      </script>
+      
+
+  </body>
+</html>

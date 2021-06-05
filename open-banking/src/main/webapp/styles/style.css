@@ -1,0 +1,73 @@
+.navbar-expand-lg {
+    border-radius: 0.5rem;
+}
+
+.container {
+    font-family: 'Old Standard TT', serif;
+}
+
+form-class + form-class {
+    padding-left: 4;
+}
+
+.menu-container {
+    background-color: white;
+    border-radius: 0.5rem;
+}
+
+#company-information {
+    background-color: white;
+    border-radius: 0.5rem;
+}
+
+.data-container {
+    background-color: rgb(220, 220, 220);
+    border-radius: 0.5rem;
+}
+
+.data-template {
+    border: solid;
+    border-color: rgb(109, 109, 109);
+    border-radius: 1rem;
+    background-color: rgb(255, 255, 255);
+}
+
+.form-container {
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.5rem;
+}
+
+.image-container {
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.5rem;
+}
+
+.profile-container{
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.5rem;
+}
+
+.transaction-container{
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.5rem;
+}
+
+.wrap-text {
+     text-align:justify;
+     word-wrap: normal;
+     word-break: break-all;
+	 white-space: normal;
+	 display: block;
+	 height: auto;
+	 margin: 3px auto;
+	 line-height: 1.4;
+	 -webkit-line-clamp: 1;
+	 -webkit-box-orient: vertical;
+}
+
+.account-template {
+	border: solid;
+	border-color: rgb(109, 109, 109);
+	border-radius: 0.5rem;
+	display: none;
+}

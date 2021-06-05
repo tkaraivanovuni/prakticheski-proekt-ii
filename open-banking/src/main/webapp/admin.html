@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>OpenBanking</title>
+
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta charset="UTF-8">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link rel="stylesheet" href="./styles/style.css">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+      <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </head>
+  <body style="background-color: rgb(220, 220, 220)">
+
+    <div class="index-page">
+
+      <div class="container">
+
+        <header>
+                
+          <nav class="navbar navbar-expand-lg navbar-light bg-white mb-1">
+              <a class="navbar-brand" href="#">
+                  <img src="./assets/AppIcon.png" alt="OpenBanking" class="img-fluid">
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  
+                  <ul class="nav navbar-nav navbar-right mr-auto ml-auto">
+                      <li>
+                          <h1><span>OpenBanking</span></h1>
+                      </li>
+                  </ul>
+                  
+              </div>
+          </nav>
+      
+        </header>
+
+        <div class="row mt-4">
+
+          <div class="col-6">
+
+            <div class="form-container p-2">
+
+              <form action="login" method="POST" id="login-form">
+                <div class="form-group w-50">
+                  <label for="username">Username</label>
+                  <input type="text" class="form-control" id="username" name="username"placeholder="Enter username">
+                </div>
+                <div class="form-group w-50">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="row px-2">
+                  <button type="submit" class="btn btn-secondary mx-2" id="login">Login</button>
+                  <button type="button" class="btn btn-secondary mx-2" id="register">Sign Up</button>
+                </div>
+                
+              </form>
+
+            </div>
+
+          </div>
+
+          <div class="col-6">
+
+            <div class="image-container">
+
+              <img src="./assets/AppLogo.png" alt="App Logo" class="mx-auto d-block img-fluid">
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <img src="./assets/FooterGraph.png" alt="Footer" class="img-fluid">
+
+      </div>
+
+      <div class="modal" tabindex="-1" role="dialog" id="register-modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Register</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+              <form id="register-form" action="register" method="POST">
+              	<div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="username" class="form-control" id="register-username" name="username" placeholder="username">
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" class="form-control" id="register-email" name="email" placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" class="form-control" id="register-password" name="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="repeat-register-password">Repeat Password</label>
+                    <input type="password" class="form-control" id="repeat-register-password" name="repeatPassword" placeholder="Repeat Password">
+                </div>
+            </form>
+
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary" form="register-form" id="confirm-registration">Register</button>
+              <button type="button" class="btn btn-secondary" id= "close-register-form" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+    
+    $(document).ready(function(){
+    	
+    	  $('#register').click(function(){
+            $('#register-modal').modal();
+          });
+    	  
+    	  $('#register-form').submit(function (e){
+    		  e.preventDefault();
+    		  
+    		  $.ajax({
+      			url: "/admin",
+      			method: "POST",
+      			data: {
+      				username: $('#register-username').val(),
+      				email: $('#register-email').val(),
+      				password: $('#register-password').val(),
+      				repeatPassword: $('#repeat-register-password').val()
+      			},     				
+      			}).done(function(data){
+      				alert(data);
+      				window.location.href = "admin.html";
+      			}).fail(function(data){
+      				alert(data);
+      			})
+    			
+    	  })
+    	  
+          
+          $('#login-form').submit(function (e){
+        		e.preventDefault();
+        		
+        		
+        		$.ajax({
+        			url: "/admin",
+        			method: "GET",
+        			data: {
+        				username: $('#username').val(),
+        				password: $('#password').val()
+        			},
+        			success: function(data){
+        				window.location.replace(data);
+        			},
+        			fail: function(){
+        				window.location.href = "error.html";
+        			}		
+        		});
+        		
+        	});
+    	
+    });
+      
+    </script>
+
+  </body>
+</html>
