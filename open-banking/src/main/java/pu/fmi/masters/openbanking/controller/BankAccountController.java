@@ -6,8 +6,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
@@ -109,7 +109,7 @@ public class BankAccountController {
 	 * @return - list of {@link BankAccount}.
 	 */
 	@GetMapping(path = "/bank-account")
-	public List<BankAccount> getBankAccounts(HttpSession session) {
+	public Set<BankAccount> getBankAccounts(HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		return user.getAccounts();
 	}
@@ -118,6 +118,8 @@ public class BankAccountController {
 	public ResponseEntity<String> deleteAccount(@PathVariable(value = "iban") String iban, HttpSession session) {
 		BankAccount bankAccount = bankAccountRepo.findByAccountNumber(iban);
 		if (bankAccount != null) {
+			bankAccount.setUser(null);
+			bankAccount.setBank(null);
 			bankAccountRepo.delete(bankAccount);
 			return new ResponseEntity<>("Deleted", HttpStatus.OK);
 		}

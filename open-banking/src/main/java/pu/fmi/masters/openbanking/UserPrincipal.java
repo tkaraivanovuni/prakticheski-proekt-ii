@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import pu.fmi.masters.openbanking.model.Role;
 import pu.fmi.masters.openbanking.model.User;
 
 /**
@@ -40,7 +41,7 @@ public class UserPrincipal implements UserDetails {
 		if (authorities.isEmpty()) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}
-		if (user.getRole().getId() == 1) {
+		if (user.getRole().equals(Role.ADMIN)) {
 			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		}
 	}

@@ -1,33 +1,31 @@
 package pu.fmi.masters.openbanking.model;
 
-import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * This class provides the main characteristics of the {@link Bank} data
  * model.
  */
 @Entity
-@Table(name = "bank")
-@JsonIgnoreProperties({ "transactions" })
-public class Bank implements Serializable {
-
-	private static final long serialVersionUID = 299449425520179180L;
+@Table(name = "banks")
+public class Bank {
 
 	@Id
 	@Column(name = "bank_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "bank_name", unique = true, nullable = false)
+	@Column(name = "bank_name", nullable = false)
 	private String bankName;
 
 	@Column(name = "api_key", nullable = false)
@@ -44,6 +42,9 @@ public class Bank implements Serializable {
 
 	@Column(name = "token_link", nullable = false)
 	private String tokenLink;
+	
+	@OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<BankAccount> savedAccounts;
 
 	/**
 	 * No arguments constructor.
@@ -52,7 +53,7 @@ public class Bank implements Serializable {
 	}
 
 	/**
-	 * All arguments constructor.
+	 * Required-arguments constructor.
 	 * 
 	 * @param bankName  - string representing the bank's name.
 	 * @param apiKey    - string representing the app's API key.

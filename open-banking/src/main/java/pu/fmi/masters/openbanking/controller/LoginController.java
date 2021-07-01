@@ -26,7 +26,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import pu.fmi.masters.openbanking.WebSecurityConfiguration;
 import pu.fmi.masters.openbanking.model.Role;
 import pu.fmi.masters.openbanking.model.User;
-import pu.fmi.masters.openbanking.repository.RoleRepo;
 import pu.fmi.masters.openbanking.repository.UserRepo;
 
 /**
@@ -35,7 +34,6 @@ import pu.fmi.masters.openbanking.repository.UserRepo;
 @RestController
 public class LoginController {
 
-	private RoleRepo roleRepo;
 	private UserRepo userRepo;
 	private WebSecurityConfiguration webSecurityConfiguration;
 
@@ -49,9 +47,9 @@ public class LoginController {
 	 * @param webSecurityConfiguration - for authentication.
 	 */
 	@Autowired
-	public LoginController(UserRepo userRepo, RoleRepo roleRepo, WebSecurityConfiguration webSecurityConfiguration) {
+	public LoginController(UserRepo userRepo, WebSecurityConfiguration webSecurityConfiguration) {
 		this.userRepo = userRepo;
-		this.roleRepo = roleRepo;
+		//this.roleRepo = roleRepo;
 		this.webSecurityConfiguration = webSecurityConfiguration;
 	}
 
@@ -72,11 +70,11 @@ public class LoginController {
 		if (password.equals(repeatPassword)) {
 
 			User user = new User(username, hashPassword(password), email);
-			Optional<Role> optionalRole = roleRepo.findByRole("USER");
-			if (!optionalRole.isPresent()) {
-				throw new InvalidArgumentException("Invalid role");
-			}
-			user.setRole(optionalRole.get());
+//			Optional<Role> optionalRole = roleRepo.findByRole("USER");
+//			if (!optionalRole.isPresent()) {
+//				throw new InvalidArgumentException("Invalid role");
+//			}
+			user.setRole(Role.USER);
 
 			try {
 				userRepo.saveAndFlush(user);
@@ -106,11 +104,11 @@ public class LoginController {
 		if (password.equals(repeatPassword)) {
 
 			User user = new User(username, hashPassword(password), email);
-			Optional<Role> optionalRole = roleRepo.findByRole("ADMIN");
-			if (!optionalRole.isPresent()) {
-				throw new InvalidArgumentException("Invalid role");
-			}
-			user.setRole(optionalRole.get());
+//			Optional<Role> optionalRole = roleRepo.findByRole("ADMIN");
+//			if (!optionalRole.isPresent()) {
+//				throw new InvalidArgumentException("Invalid role");
+//			}
+			user.setRole(Role.ADMIN);
 
 			try {
 				userRepo.saveAndFlush(user);

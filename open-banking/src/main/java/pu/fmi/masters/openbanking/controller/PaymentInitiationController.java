@@ -66,7 +66,7 @@ public class PaymentInitiationController {
 		if (response == null) {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.GATEWAY_TIMEOUT);
 		}
-		if (response.getStatusCodeValue() == 200) {
+		if (response.getStatusCodeValue() == 201) {
 			return new ResponseEntity<>(response.getBody(), HttpStatus.CREATED);
 		} else if (response.getStatusCodeValue() == 400) {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.BAD_REQUEST);

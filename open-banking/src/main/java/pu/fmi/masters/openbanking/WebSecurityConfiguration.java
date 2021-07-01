@@ -37,13 +37,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-		//.antMatchers("/admin").hasRole("ADMIN")
-		//.antMatchers("/user").hasAnyRole("USER", "ADMIN")
-		.antMatchers("/**").permitAll().requestMatchers(EndpointRequest.toAnyEndpoint())
-				.permitAll().and().csrf().disable();
+				// TODO
+				.antMatchers("/**").permitAll().requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll().and()
+				.csrf().disable();
 		http.headers().frameOptions().disable();
 	}
-	
+
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();

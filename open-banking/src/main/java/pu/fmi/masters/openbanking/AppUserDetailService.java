@@ -2,6 +2,7 @@ package pu.fmi.masters.openbanking;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,12 +24,13 @@ public class AppUserDetailService implements UserDetailsService {
 	 * 
 	 * @param userRepo - {@link UserRepo} for data access.
 	 */
+	@Autowired
 	public AppUserDetailService(UserRepo userRepo) {
 		this.userRepo = userRepo;
 	}
 
 	/**
-	 * This method returns a new {@link UserPrincipal} for authentication.
+	 * This method returns a new {@link UserPrincipal} for authorization.
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

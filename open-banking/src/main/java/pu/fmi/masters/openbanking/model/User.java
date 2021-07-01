@@ -1,17 +1,16 @@
 package pu.fmi.masters.openbanking.model;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -22,32 +21,28 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  * model.
  */
 @Entity
-@Table(name = "user")
-public class User implements Serializable {
-
-	private static final long serialVersionUID = -7882649294251212245L;
+@Table(name = "users")
+public class User {
 
 	@Id
-	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "username", nullable = false, unique = true)
+	@Column(nullable = false, unique = true)
 	private String username;
 
-	@Column(name = "password", nullable = false)
+	@Column(nullable = false)
 	private String password;
 
-	@Column(name = "email", nullable = false, unique = true)
+	@Column(nullable = false, unique = true)
 	private String email;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="role_id")
+	@Enumerated
 	private Role role;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonBackReference
-	private List<BankAccount> accounts;
+	private Set<BankAccount> accounts;
 
 	/**
 	 * No arguments constructor.
@@ -156,7 +151,7 @@ public class User implements Serializable {
 	 * 
 	 * @return - List of {@link BankAccount} the user has.
 	 */
-	public List<BankAccount> getAccounts() {
+	public Set<BankAccount> getAccounts() {
 		return accounts;
 	}
 
@@ -166,7 +161,7 @@ public class User implements Serializable {
 	 * @param accounts - List of {@link BankAccount} to be set as new account
 	 *                 list.
 	 */
-	public void setAccounts(List<BankAccount> accounts) {
+	public void setAccounts(Set<BankAccount> accounts) {
 		this.accounts = accounts;
 	}
 

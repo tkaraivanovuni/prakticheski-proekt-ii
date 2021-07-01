@@ -1,7 +1,5 @@
 package pu.fmi.masters.openbanking.model;
 
-import java.io.Serializable;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,42 +17,39 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  * data model.
  */
 @Entity
-@Table(name = "bank_account")
-public class BankAccount implements Serializable {
-
-	private static final long serialVersionUID = 4055215539857229393L;
+@Table(name = "bank_accounts")
+public class BankAccount {
 
 	@Id
-	@Column(name = "bank_account_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@ManyToOne(cascade=CascadeType.MERGE)
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+	@JoinColumn(name = "user_id")
 	@JsonManagedReference
 	private User user;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade=CascadeType.MERGE)
 	@JoinColumn(name="bank_id")
 	private Bank bank;
 
 	@Column(name = "account_number", unique = true, nullable = false)
 	private String accountNumber;
 
-	@Column(name = "currency", nullable = false)
+	@Column(nullable = false)
 	private String currency;
 	
-	@Column(name = "product", nullable = false)
+	@Column(nullable = false)
 	private String product;
 
 	/**
-	 * No arguments constructor.
+	 * No-arguments constructor.
 	 */
 	public BankAccount() {
 	}
 
 	/**
-	 * Required arguments constructor.
+	 * Required-arguments constructor.
 	 * 
 	 * @param user          - {@link User} holding the account.
 	 * @param bank          - {@link Bank} the account is at.
@@ -62,7 +57,6 @@ public class BankAccount implements Serializable {
 	 * @param currency      - the currency of the account.
 	 */
 	public BankAccount(User user, Bank bank, String accountNumber, String currency) {
-		super();
 		this.user = user;
 		this.bank = bank;
 		this.accountNumber = accountNumber;

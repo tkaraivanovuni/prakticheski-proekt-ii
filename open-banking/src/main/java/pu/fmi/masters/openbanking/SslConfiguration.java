@@ -1,6 +1,7 @@
 package pu.fmi.masters.openbanking;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -39,10 +40,11 @@ public class SslConfiguration {
 	private String keyPass;
 
 	/**
-	 * This method creates a rest template instance using a client configured
-	 * for mutual TLS.
+	 * This method creates a rest template instance using a client configured for
+	 * mutual TLS.
 	 * 
-	 * @return
+	 * @return - instance of RestTemplate to be used for requests where mutual TLS
+	 *         is required.
 	 * @throws UnrecoverableKeyException
 	 * @throws KeyManagementException
 	 * @throws KeyStoreException
@@ -51,30 +53,52 @@ public class SslConfiguration {
 	 * @throws IOException
 	 */
 	@Bean
-	RestTemplate restTemplate() throws UnrecoverableKeyException, KeyManagementException, KeyStoreException,
+	public RestTemplate restTemplate() throws UnrecoverableKeyException, KeyManagementException, KeyStoreException,
 			NoSuchAlgorithmException, CertificateException, IOException {
-		return new RestTemplate(new HttpComponentsClientHttpRequestFactory(closeableHttpClient()));
+		return new RestTemplate(new HttpComponentsClientHttpRequestFactory(createCloseableHttpClient()));
 	}
 
-	private CloseableHttpClient closeableHttpClient() throws KeyStoreException, NoSuchAlgorithmException,
+	private CloseableHttpClient createCloseableHttpClient() throws KeyStoreException, NoSuchAlgorithmException,
 			CertificateException, IOException, UnrecoverableKeyException, KeyManagementException {
+		return HttpClients.custom().setSSLContext(createSSLContext()).disableContentCompression().build();
+	}
+
+	private KeyStore createKeyStore() throws KeyStoreException, NoSuchAlgorithmException, CertificateException,
+			FileNotFoundException, IOException {
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-		FileInputStream inputStream = new FileInputStream(this.keyStore.getFile());
-		keyStore.load(inputStream, this.keyStorePass.toCharArray());
+		keyStore.load(createKeyStoreFileInputStream(), this.keyStorePass.toCharArray());
+		return keyStore;
+	}
+
+	private FileInputStream createKeyStoreFileInputStream() throws FileNotFoundException, IOException {
+		return new FileInputStream(this.keyStore.getFile());
+	}
+
+	private SSLContext createSSLContext() throws NoSuchAlgorithmException, KeyManagementException,
+			UnrecoverableKeyException, KeyStoreException, CertificateException, FileNotFoundException, IOException {
 		SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+		sslContext.init(new KeyManager[] { createCustomX509KeyManager() },
+				createTrustManagerFactory().getTrustManagers(), null);
+		return sslContext;
+	}
+
+	private KeyManagerFactory createKeyManagerFactory() throws NoSuchAlgorithmException, UnrecoverableKeyException,
+			KeyStoreException, CertificateException, FileNotFoundException, IOException {
 		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+		keyManagerFactory.init(createKeyStore(), this.keyPass.toCharArray());
+		return keyManagerFactory;
+	}
+
+	private TrustManagerFactory createTrustManagerFactory() throws NoSuchAlgorithmException, KeyStoreException {
 		TrustManagerFactory trustManagerFactory = TrustManagerFactory
 				.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 		trustManagerFactory.init((KeyStore) null);
-		keyManagerFactory.init(keyStore, this.keyPass.toCharArray());
+		return trustManagerFactory;
+	}
 
-		MyX509KeyManager customKeyManager = new MyX509KeyManager(
-				(X509KeyManager) keyManagerFactory.getKeyManagers()[0]);
-		sslContext.init(new KeyManager[] { customKeyManager }, trustManagerFactory.getTrustManagers(), null);
-
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).disableContentCompression()
-				.build();
-		return httpClient;
+	private CustomX509ExtendedKeyManager createCustomX509KeyManager() throws UnrecoverableKeyException, NoSuchAlgorithmException,
+			KeyStoreException, CertificateException, FileNotFoundException, IOException {
+		return new CustomX509ExtendedKeyManager((X509KeyManager) (createKeyManagerFactory().getKeyManagers()[0]));
 	}
 
 }
