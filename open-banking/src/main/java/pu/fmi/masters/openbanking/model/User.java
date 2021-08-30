@@ -37,7 +37,7 @@ public class User {
 	@Column(nullable = false, unique = true)
 	private String email;
 	
-	@Enumerated
+	@Enumerated//(EnumType.STRING)
 	private Role role;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -72,6 +72,21 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.email = email;
+	}
+	
+	/**
+	 * Id, username, password, role and email constructor.
+	 * 
+	 * @param username - string representing username.
+	 * @param password - string representing password.
+	 * @param email    - string representing email.
+	 */
+	public User(int id, String username, String email, String password, Role role) {
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.role = role;
 	}
 
 	/**

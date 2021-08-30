@@ -32,7 +32,7 @@ public class BankInfoService {
 	 * 
 	 * @return - the added object.
 	 */
-	public Bank addBank(Bank bank) {
+	public Bank addNewBank(Bank bank) {
 		return bankRepo.saveAndFlush(bank);
 	}
 
@@ -54,6 +54,25 @@ public class BankInfoService {
 	 */
 	public List<Bank> filterBanksByName(String bankName) {
 		return bankRepo.findByBankNameContaining(bankName);
+	}
+	
+	/**
+	 * This method deletes a {@link Bank} by id.
+	 * 
+	 * @param id -id of the bank to be deleted
+	 */
+	public void deleteBank(int id) {
+		bankRepo.deleteById(id);
+	}
+	
+	/**
+	 * This method updates a {@link Bank}.
+	 * 
+	 * @param bank - new bank info.
+	 * @return - the updated bank.
+	 */
+	public Bank editBank(Bank bank) {
+		return bankRepo.saveAndFlush(bank);
 	}
 
 }

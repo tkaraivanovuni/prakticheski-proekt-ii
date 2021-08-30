@@ -1,246 +1,293 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>OpenBanking</title>
 
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<head>
+	<title>OpenBanking</title>
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="./styles/style.css">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-		
-		<script src="js/main.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    </head>
-    <body style="background-color: rgb(220, 220, 220)">
-    
-        <div class="accounts-page">
+	<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="./styles/style.css">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap"
+		rel="stylesheet">
 
-            <div class="container">
+	<script src="js/main.js"></script>
+	<script src="https://kit.fontawesome.com/2126b9dc6e.js" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.js"
+		integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
 
-                <header>
-                
-                    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-1">
-                        <a class="navbar-brand" href="#">
-                            <img src="./assets/AppIcon.png" alt="OpenBanking" class="img-fluid">
-                        </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
-                      
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+</head>
 
-                            <ul class="nav navbar-nav navbar-right mr-auto ml-auto">
-                                <li>
-                                    <h1><span>OpenBanking</span></h1>
-                                </li>
-                            </ul>
+<body>
 
-                            <ul class="nav navbar-nav navbar-right ml-auto">
-                                <li class="nav-item active">
-                                    <a class="nav-link" href="#" id="accounts-logout">Logout </a>
-                                </li>
-                            </ul>
-                        </div>
-                      </nav>
-                
-                </header>
+	<div class="banks-page" style="min-height: 100vh;">
 
-                <div class="container">
-                
-                	<div class="accounts-container p-2">
+		<div class="container d-flex flex-column align-items-center">
 
-                                <div class="panel panel-default">
+			<div class="d-flex flex-column align-items-center col-xs-12 col-md-4 my-3">
+				<h1 style="text-shadow: 2px 2px silver; cursor: pointer; color: dodgerblue;">OpenBanking</h1>
+				<span>B A C K O F F I C E</span>
+			</div>
 
-                                    <div class="panel-heading">
-                                    
-                                    	<div class="row">
-                                    		<div class="col-2">
-                                    			<h3 class="panel-title">Banks</h3>
-                                    		</div>                                        	
-                                        	
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="button" class="btn btn-secondary mx-2" id="add-bank-button">Add bank</button>
-                                    
-                                    <hr>
-                                    
-                                    <div class="bank-template row p-1 m-1 align-items-center" id="bank-template">
-            
-							            	<div class="col-2 border-right border-left px-auto wrap-text">
-							                  <h4 id="bank-name-field"> Bank Name </h4>
-							                </div>
-							                
-							                <div class="col-2 border-right border-left px-auto wrap-text">
-							                  <h4 id="api-key-field"> API Key</h4>
-							                </div>
-							        
-							                <div class="col-2 border-right border-left px-auto wrap-text">
-							                  <h4 id="api-secret-field"> API Secret </h4>
-							                </div>
-							        
-							                <div class="col-2 border-right border-left px-auto wrap-text">
-							                  <h4 id="api-link-field"> API Link </h4>
-							                </div>
-							                  
-							                <div class="col-2 border-right border-left px-auto wrap-text">
-							                  <h4 id="auth-link-field"> Auth. Link </h4>
-							                </div>
-							                
-							                <div class="col-2 border-right border-left px-auto wrap-text">
-							                  <h4 id="token-link-field"> Token Link </h4>
-							                </div>
-							                
-							        </div>  
-							        
-							        <hr>
-            
-                                    <ul class="list-group" id="banks-list">  
-                                    
-                                    	                                     
-                    
-                                    </ul>
-    
-                                </div>
+			<div class="accounts-container p-2">
 
-                            </div>
-                
-                </div>
+				<div class="panel panel-default">
+					
+					<div class="d-flex justify-content-between" style="min-width: 100%">
+					
+						<button type="button" class="btn btn-primary mx-2" id="add-bank-button">Add bank</button>
+						<button type="button" class="btn btn-secondary" id="banks-logout">Logout</button>
+					
+					</div>
+					<table class="table table-striped table-bordered mt-2" id="bank-table">
+						<thead>
+							<tr>
+								<th data-field="id">Id</th>
+								<th data-field="bankName">Name</th>
+								<th data-field="apiKey">API Key</th>
+								<th data-field="secret">API Secret</th>
+								<th data-field="apiLink">API Link</th>
+								<th data-field="authLink">Auth. Link</th>
+								<th data-field="tokenLink">Token Link</th>
+								<th>Options</th>
+							</tr>
+						</thead>
+						<tbody id="banks-list">
+							<tr id="bank-template" style="display: none">
+								<td id="bank-id-field">Bank Id</td>
+								<td id="bank-name-field">Bank Name</td>
+								<td id="api-key-field"> API Key</td>
+								<td id="api-secret-field"> API Secret </td>
+								<td id="api-link-field"> API Link </td>
+								<td id="auth-link-field"> Auth. Link </td>
+								<td id="token-link-field"> Token Link </td>
+								<td><i class="far fa-trash-alt mx-3" id="delete-icon"></i><i class="far fa-edit mx-3"
+										id="edit-icon"></i></td>
+							</tr>
+						</tbody>
+					</table>
 
-                <img src="./assets/FooterGraph.png" alt="Footer" class="img-fluid">
-            
-            </div>
-            
-            <div class="modal" tabindex="-1" role="dialog" id="add-bank-modal">
-		        <div class="modal-dialog" role="document">
-		          <div class="modal-content">
-		            <div class="modal-header">
-		              <h5 class="modal-title">Add Bank</h5>
-		              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		                <span aria-hidden="true">&times;</span>
-		              </button>
-		            </div>
-		            <div class="modal-body">
-		              
-		              <form id="add-bank-form" action="bank" method="POST">
-		              	<div class="form-group">
-		                    <label for="add-bank-name">Bank name</label>
-		                    <input class="form-control" id="add-bank-name" name="bank-name" placeholder="Bank name">
-		                </div>
-		                <div class="form-group">
-		                    <label for="add-api-key">ApiKey</label>
-		                    <input class="form-control" id="add-api-key" name="api-key" placeholder="API key">
-		                </div>
-		                <div class="form-group">
-		                    <label for="add-secret">Secret</label>
-		                    <input class="form-control" id="add-secret" name="secret" placeholder="Secret">
-		                </div>
-						<div class="form-group">
-		                    <label for="add-api-url">API URL</label>
-		                    <input class="form-control" id="add-api-url" name="api-url" placeholder="API URL">
-		                </div>
-						<div class="form-group">
-		                    <label for="add-auth-url">Auth URL</label>
-		                    <input class="form-control" id="add-auth-url" name="auth-url" placeholder="Auth URL">
-		                </div>
-						<div class="form-group">
-		                    <label for="add-token-url">Token URL</label>
-		                    <input class="form-control" id="add-token-url" name="token-url" placeholder="Token URL">
-		                </div>
-		            </form>
-		
-		            </div>
-		            <div class="modal-footer">
-		              <button type="submit" class="btn btn-secondary" form="add-bank-form" id="confirm-addition">Add Bank</button>
-		              <button type="button" class="btn btn-secondary" id= "close-add-bank-form" data-dismiss="modal">Close</button>
-		            </div>
-		          </div>
-		        </div>
-		      </div>
+				</div>
 
-        </div>
-        
-        <script>
-        
-        $(document).ready(function(){
-        	
-        	$('#add-bank-button').click(function(){
-                $('#add-bank-modal').modal();
-            });
-      		  
-           function displayAllBanks(){
-      		  $.ajax({
-  	    		  url: "/bank",
-  	    		  method: "GET",
-  	    		  success: function(data){
-  	    			  data.forEach(function (bank){
-  	    				  console.log(bank);
-  	    				  showBank(bank.bankName, bank.apiKey, bank.secret, bank.apiLink, bank.authLink, bank.tokenLink);
-  	    			  });
-  	    		  },fail: function(){
-  	    			  alert("Banks could not be displayed");
-  	    		  }
-      		  });
-      	    }
-           
-           $('#add-bank-form').submit(function (e){
-     		  e.preventDefault();
-     		  
-     		  $.ajax({
-       			url: "/bank",
-       			method: "POST",
-       			data: {
-       				bank_name: $('#add-bank-name').val(),
-       				api_key: $('#add-api-key').val(),
-       				secret: $('#add-secret').val(),
-       				api_link: $('#add-api-url').val(),
-       				auth_link: $('#add-auth-url').val(),
-       				token_link: $('#add-token-url').val()
-       			},     				
-       			}).done(function(data){
-       				alert(data);
-       				window.location.href = "banks.html";
-       			}).fail(function(data){
-       				alert(data);
-       			})
-     			
-     	  })
-      	 
-        	function showBank(name, apiKey, secret, apiLink, authLink, tokenLink){
-                var copiedBank = $('#bank-template').clone();
-            	  
-                copiedBank.attr('id', '');
-                copiedBank.find('#bank-name-field').text(name);
-                copiedBank.find('#api-key-field').text(apiKey);
-                copiedBank.find('#api-secret-field').text(secret);
-                copiedBank.find('#api-link-field').text(apiLink);
-                copiedBank.find('#auth-link-field').text(authLink);
-                copiedBank.find('#token-link-field').text(tokenLink);
-                copiedBank.find('span').hide();
+			</div>
 
-                $('#banks-list').prepend(copiedBank);
-                
-                copiedBank.show();
-                
-            }
-        	
-        	$("#accounts-logout").on("click", function(){
-        		  logout();
-        	});
-        	
-        	displayAllBanks();
-      		  
-      	  });
-        
-        </script>
-        
-  </body>
+		</div>
+
+		<div class="modal" tabindex="-1" role="dialog" id="add-bank-modal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modal-title">Add Bank</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+						<form id="add-bank-form" action="bank" method="POST">
+							<div class="form-group">
+								<label for="add-bank-name">Bank name</label>
+								<input class="form-control" id="add-bank-name" name="bank-name" placeholder="Bank name">
+							</div>
+							<div class="form-group">
+								<label for="add-api-key">ApiKey</label>
+								<input class="form-control" id="add-api-key" name="api-key" placeholder="API key">
+							</div>
+							<div class="form-group">
+								<label for="add-secret">Secret</label>
+								<input class="form-control" id="add-secret" name="secret" placeholder="Secret">
+							</div>
+							<div class="form-group">
+								<label for="add-api-url">API URL</label>
+								<input class="form-control" id="add-api-url" name="api-url" placeholder="API URL">
+							</div>
+							<div class="form-group">
+								<label for="add-auth-url">Auth URL</label>
+								<input class="form-control" id="add-auth-url" name="auth-url" placeholder="Auth URL">
+							</div>
+							<div class="form-group">
+								<label for="add-token-url">Token URL</label>
+								<input class="form-control" id="add-token-url" name="token-url" placeholder="Token URL">
+							</div>
+						</form>
+
+					</div>
+					<div class="modal-footer">
+						<div class="alert alert-danger" role="alert" style="display: none" id="add-bank-modal-error">
+						  Request could not be completed.
+						</div>
+						<button type="button" class="btn btn-warning" id="confirm-update" style="display: none">Update</button>
+						<button type="submit" class="btn btn-success" form="add-bank-form" id="confirm-addition">Add
+							Bank</button>
+						<button type="button" class="btn btn-danger" id="close-add-bank-form"
+							data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal" tabindex="-1" role="dialog" id="delete-bank-modal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Confirmation</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" id="delete-bank-modal-body">
+						<p>Are you sure you want to delete this bank?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" id="confirm-delete-button">Delete</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+
+		$(document).ready(function () {
+
+			$('#add-bank-button').click(function () {
+				$('#add-bank-modal').modal();
+				$('#modal-title').text("Add Bank");
+				$('#confirm-addition').show();
+				$('#confirm-update').hide();
+			});
+
+			function displayAllBanks() {
+
+				$.ajax({
+					url: "/bank",
+					method: "GET",
+					success: function (data) {
+						data.forEach(function (bank) {
+							console.log(bank);
+							showBank(bank.id, bank.bankName, bank.apiKey, bank.secret, bank.apiLink, bank.authLink, bank.tokenLink);
+						});
+					}, fail: function () {
+						alert("Banks could not be displayed");
+					}
+				});
+			}
+
+			function showBank(id, name, apiKey, secret, apiLink, authLink, tokenLink) {
+				var copiedBank = $('#bank-template').clone();
+
+				copiedBank.attr('id', '');
+				copiedBank.find('#bank-id-field').text(id);
+				copiedBank.find('#bank-name-field').text(name);
+				copiedBank.find('#api-key-field').text(apiKey);
+				copiedBank.find('#api-secret-field').text(secret);
+				copiedBank.find('#api-link-field').text(apiLink);
+				copiedBank.find('#auth-link-field').text(authLink);
+				copiedBank.find('#token-link-field').text(tokenLink);
+				copiedBank.find('#delete-icon').click(function () {
+					$('#delete-bank-modal').modal();
+					$('#confirm-delete-button').click(function () {
+						$.ajax({
+							url: "/bank/" + id,
+							method: "DELETE",
+							success: function(data) {
+								window.location.href = "banks.html";
+							},
+							error: function(data) {
+								$('#delete-bank-modal-body').text('Request could not be processed!');
+								$('#confirm-delete-button').hide();
+							}
+						})
+					})
+				})
+				copiedBank.find('#edit-icon').click(function () {
+					$('#add-bank-modal').modal();
+					$('#modal-title').text("Update Bank");
+					$('#confirm-addition').hide();
+					$('#confirm-update').show();
+					$('#add-bank-name').val(name);
+					$('#add-api-key').val(apiKey),
+					$('#add-secret').val(secret),
+					$('#add-api-url').val(apiLink),
+					$('#add-auth-url').val(authLink),
+					$('#add-token-url').val(tokenLink)
+					$('#confirm-update').click(function() {
+						$.ajax({
+							url: "/bank/" + id,
+							method: "PUT",
+							data: {
+								bank_name: $('#add-bank-name').val(),
+								api_key: $('#add-api-key').val(),
+								secret: $('#add-secret').val(),
+								api_link: $('#add-api-url').val(),
+								auth_link: $('#add-auth-url').val(),
+								token_link: $('#add-token-url').val()
+							},
+							success: function(data) {
+								window.location.href = "banks.html";
+							},
+							error: function(data) {
+								$('#add-bank-modal-error').text('Incorrect bank data!');
+							}
+						})
+					})
+				})
+				
+
+				$('#banks-list').append(copiedBank);
+
+				copiedBank.show();
+
+			}
+
+			$('#add-bank-form').submit(function (e) {
+				e.preventDefault();
+
+				$.ajax({
+					url: "/bank",
+					method: "POST",
+					data: {
+						bank_name: $('#add-bank-name').val(),
+						api_key: $('#add-api-key').val(),
+						secret: $('#add-secret').val(),
+						api_link: $('#add-api-url').val(),
+						auth_link: $('#add-auth-url').val(),
+						token_link: $('#add-token-url').val()
+					},
+				}).done(function (data) {
+					window.location.href = "banks.html";
+				}).fail(function (data) {
+					$("#add-bank-modal-error").show();
+				})
+
+			})
+
+			$("#banks-logout").on("click", function () {
+				logoutAdmin();
+			});
+			
+			getAdministration();
+			displayAllBanks();
+
+		});
+
+	</script>
+
+</body>
+
 </html>

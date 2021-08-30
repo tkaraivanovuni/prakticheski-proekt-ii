@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,22 +19,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
-import pu.fmi.masters.openbanking.WebSecurityConfiguration;
+import pu.fmi.masters.openbanking.configuration.WebSecurityConfiguration;
+import pu.fmi.masters.openbanking.dto.LoginDto;
+import pu.fmi.masters.openbanking.dto.UserDto;
 import pu.fmi.masters.openbanking.model.Role;
 import pu.fmi.masters.openbanking.model.User;
 import pu.fmi.masters.openbanking.repository.UserRepo;
+import pu.fmi.masters.openbanking.service.UserAccountService;
 
 /**
- * This class controls user registration and login.
+ * This class controls user login.
  */
 @RestController
 public class LoginController {
-
+	
+	private UserAccountService userAccountService;
 	private UserRepo userRepo;
 	private WebSecurityConfiguration webSecurityConfiguration;
 
@@ -47,78 +54,22 @@ public class LoginController {
 	 * @param webSecurityConfiguration - for authentication.
 	 */
 	@Autowired
-	public LoginController(UserRepo userRepo, WebSecurityConfiguration webSecurityConfiguration) {
+	public LoginController(UserRepo userRepo, WebSecurityConfiguration webSecurityConfiguration, UserAccountService userAccountService) {
 		this.userRepo = userRepo;
-		//this.roleRepo = roleRepo;
 		this.webSecurityConfiguration = webSecurityConfiguration;
-	}
-
-	/**
-	 * This method registers a new user.
-	 * 
-	 * @param username       - string representation of username.
-	 * @param email          - string representation of email.
-	 * @param password       - string representation of password.
-	 * @param repeatPassword - repeated password.
-	 * @return - string representing the outcome.
-	 */
-	@PostMapping(path = "/user")
-	public String registerNewUser(@RequestParam(value = "username") String username,
-			@RequestParam(value = "email") String email, @RequestParam(value = "password") String password,
-			@RequestParam(value = "repeatPassword") String repeatPassword) {
-
-		if (password.equals(repeatPassword)) {
-
-			User user = new User(username, hashPassword(password), email);
-//			Optional<Role> optionalRole = roleRepo.findByRole("USER");
-//			if (!optionalRole.isPresent()) {
-//				throw new InvalidArgumentException("Invalid role");
-//			}
-			user.setRole(Role.USER);
-
-			try {
-				userRepo.saveAndFlush(user);
-			} catch (RuntimeException e) {
-				return "Registration failed!";
-			}
-			return "Registration successful! Please log in!";
-		}
-		return "Passwords do not match!";
-
+		this.userAccountService = userAccountService;
 	}
 	
 	/**
-	 * This method registers a new admin.
+	 * This method handles requests for getting user data.
 	 * 
-	 * @param username       - string representation of username.
-	 * @param email          - string representation of email.
-	 * @param password       - string representation of password.
-	 * @param repeatPassword - repeated password.
-	 * @return - string representing the outcome.
+	 * @param session - the current session.
+	 * @return - {@link User} data.
 	 */
-	@PostMapping(path = "/admin")
-	public String registerNewAdmin(@RequestParam(value = "username") String username,
-			@RequestParam(value = "email") String email, @RequestParam(value = "password") String password,
-			@RequestParam(value = "repeatPassword") String repeatPassword) {
-
-		if (password.equals(repeatPassword)) {
-
-			User user = new User(username, hashPassword(password), email);
-//			Optional<Role> optionalRole = roleRepo.findByRole("ADMIN");
-//			if (!optionalRole.isPresent()) {
-//				throw new InvalidArgumentException("Invalid role");
-//			}
-			user.setRole(Role.ADMIN);
-
-			try {
-				userRepo.saveAndFlush(user);
-			} catch (RuntimeException e) {
-				return "Registration failed!";
-			}
-			return "Registration successful! Please log in!";
-		}
-		return "Passwords do not match!";
-
+	@GetMapping(path = "/profile")
+	public User getUserInfo(HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		return user;
 	}
 
 	/**
@@ -129,10 +80,9 @@ public class LoginController {
 	 * @param session  - current session.
 	 * @return - string representing url to redirect to.
 	 */
-	@GetMapping(path = "/user")
-	public String login(@RequestParam(value = "username") String username,
-			@RequestParam(value = "password") String password, HttpSession session) {
-		Optional<User> optionalUser = userRepo.findUserByUsernameAndPassword(username, hashPassword(password));
+	@PostMapping(path = "/session")
+	public String login(LoginDto loginDto, HttpSession session) {
+		Optional<User> optionalUser = userRepo.findUserByUsernameAndPassword(loginDto.getUsername(), hashPassword(loginDto.getPassword()));
 		if(!optionalUser.isPresent()) {
 			throw new InvalidArgumentException("Wrong username or password!");
 		}
@@ -177,14 +127,16 @@ public class LoginController {
 	 * @param session  - current session.
 	 * @return - string representing url to redirect to.
 	 */
-	@GetMapping(path = "/admin")
-	public String loginAdmin(@RequestParam(value = "username") String username,
-			@RequestParam(value = "password") String password, HttpSession session) {
-		Optional<User> optionalUser = userRepo.findUserByUsernameAndPassword(username, hashPassword(password));
+	@PostMapping(path = "/session/admin")
+	public String loginAdmin(LoginDto loginDto, HttpSession session) {
+		Optional<User> optionalUser = userRepo.findUserByUsernameAndPassword(loginDto.getUsername(), hashPassword(loginDto.getPassword()));
 		if(!optionalUser.isPresent()) {
-			throw new InvalidArgumentException("Wrong username or password!");
+			throw new IllegalArgumentException("Wrong username or password!");
 		}
 		User user = optionalUser.get();
+		if (!user.getRole().equals(Role.ADMIN)) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "More privileges required!");
+		}
 		session.setAttribute("user", user);
 		try {
 			UserDetails userDetails = webSecurityConfiguration.userDetailsServiceBean()
@@ -225,7 +177,7 @@ public class LoginController {
 	 * @return - int representing id and a response status.
 	 */
 	@GetMapping(path = "/authorization")
-	public ResponseEntity<Integer> authorizeMe(HttpSession session) {
+	public ResponseEntity<Integer> isAuthorized(HttpSession session) {
 
 		User user = (User) session.getAttribute("user");
 
@@ -235,6 +187,25 @@ public class LoginController {
 			return new ResponseEntity<>(0, HttpStatus.UNAUTHORIZED);
 		}
 
+	}
+	
+	/**
+	 * This method returns the user id and the response status.
+	 * 
+	 * @param session - the current session.
+	 * @return - int representing id and a response status.
+	 */
+	@GetMapping(path = "/authorization/admin")
+	public ResponseEntity<Integer> isAdmin(HttpSession session) {
+
+		User user = (User) session.getAttribute("user");
+
+		if (user != null) {
+			if (user.getRole().equals(Role.ADMIN)) {
+				return new ResponseEntity<>(user.getId(), HttpStatus.OK);
+			}
+		} 
+		return new ResponseEntity<>(0, HttpStatus.UNAUTHORIZED);
 	}
 
 	/**

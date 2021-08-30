@@ -27,72 +27,51 @@
 
 </head>
 
-<body style="background-color: rgb(220, 220, 220)">
+<body>
 
-  <div class="index-page">
+  <div class="index-page" style="min-height: 100vh;">
 
-    <div class="container">
+    <div class="container d-flex flex-column flex-md-row" style="min-height: 100vh;">
 
-      <header class="mt-4">
+      <div class="col-xs-12 col-md-4">
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
-          <!-- <a class="navbar-brand" href="#">
-            <img src="./assets/AppIcon.png" alt="OpenBanking" class="img-fluid">
-          </a> -->
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-            <ul class="nav navbar-nav navbar-right mr-auto ml-auto">
-              <li>
-                <h1 style="text-shadow: 2px 2px silver;">OpenBanking</h1>
-              </li>
-            </ul>
-
-        </nav>
-
-      </header>
-
-      <div class="row mt-4">
-
-        <div class="col-6">
-
-          <div class="form-container p-2">
-
-            <form action="login" method="POST" id="login-form">
-              <div class="form-group w-50">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-              </div>
-              <div class="form-group w-50">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-              </div>
-              <div class="row px-2">
-                <button type="submit" class="btn btn-secondary mx-2" id="login">Login</button>
-                <button type="button" class="btn btn-secondary mx-2" id="register">Sign Up</button>
-              </div>
-
-            </form>
-
-          </div>
-
+        <div class="my-3">
+          <h1 style="text-shadow: 2px 2px silver; cursor: pointer; color: dodgerblue;">OpenBanking</h1>
+          <span style="color: silver"><i>All your accounts in one place!</i></span>
         </div>
 
-        <div class="col-6">
+        <div class="form-container p-2" style="background-color: inherit;">
 
-          <div class="image-container">
+          <form action="login" method="POST" id="login-form">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            </div>
+            <div class="alert alert-danger" role="alert" style="display: none;" id="login-error">
+              Wrong username or password!
+            </div>
+            <div class="row px-2">
+              <button type="submit" class="btn btn-primary mx-2" id="login">Login</button>
+              <button type="button" class="btn btn-info mx-2" id="register">Sign Up</button>
+            </div>
 
-            <img src="./assets/AppLogo.png" alt="App Logo" class="mx-auto d-block img-fluid">
-
-          </div>
+          </form>
 
         </div>
 
       </div>
 
-      <img src="./assets/FooterGraph.png" alt="Footer" class="img-fluid">
+      <div class="col-xs-12 col-md-8 mt-auto m-md-auto"
+        style="max-height: 100vh; margin-top: 1vh; margin-bottom: 1vh; margin-left: 1vw; margin-right: 1vw;">
+
+        <img src="./assets/background.jpg" alt="Footer" class="img-responsive"
+          style="max-width: 100%; max-height: 100%;">
+
+      </div>
 
     </div>
 
@@ -107,8 +86,8 @@
           </div>
           <div class="modal-body">
 
-            <form id="register-form" action="register" method="POST">
-              <div class="form-group">
+            <form id="register-form" action="register" method="POST" class="justify-content-center">
+              <div class="form-group w-50">
                 <label for="register-username">Username</label>
                 <input type="username" class="form-control" id="register-username" name="username"
                   placeholder="username">
@@ -118,12 +97,12 @@
                 <input type="email" class="form-control" id="register-email" name="email"
                   placeholder="example@gmail.com">
               </div>
-              <div class="form-group">
+              <div class="form-group w-75">
                 <label for="register-password">Password</label>
                 <input type="password" class="form-control" id="register-password" name="password"
                   placeholder="Password">
               </div>
-              <div class="form-group">
+              <div class="form-group w-75">
                 <label for="repeat-register-password">Repeat Password</label>
                 <input type="password" class="form-control" id="repeat-register-password" name="repeatPassword"
                   placeholder="Repeat Password">
@@ -131,10 +110,19 @@
             </form>
 
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-secondary" form="register-form"
-              id="confirm-registration">Register</button>
-            <button type="button" class="btn btn-secondary" id="close-register-form" data-dismiss="modal">Close</button>
+          <div class="modal-footer d-flex justify-content-between">
+            <div>
+              <button type="submit" class="btn btn-success" form="register-form"
+                id="confirm-registration">Submit</button>
+              <button type="button" class="btn btn-danger px-3" id="close-register-form"
+                data-dismiss="modal">Cancel</button>
+            </div>
+            <div class="alert alert-danger" role="alert" id="register-error" style="display: none;">
+              Error!
+            </div>
+            <div class="alert alert-success" role="alert" id="register-success" style="display: none;">
+              Success! You may now log in!
+            </div>
           </div>
         </div>
       </div>
@@ -150,6 +138,14 @@
         $('#register-modal').modal();
       });
 
+      $('#register-username').keyup(function () {
+        $('#register-error').hide();
+      })
+
+      $('#username').keyup(function () {
+        $('#login-error').hide();
+      })
+
       $('#register-form').submit(function (e) {
         e.preventDefault();
 
@@ -163,31 +159,37 @@
             repeatPassword: $('#repeat-register-password').val()
           },
         }).done(function (data) {
-          alert(data);
-          window.location.href = "index.html";
+        	$('#register-success').show();
+            setTimeout(function () {
+              window.location.replace("index.html");
+            }, 1000)
         }).fail(function (data) {
-          alert(data);
+          if (data.status === 409) {
+            $('#register-error').text("Username already exists!");
+            $('#register-error').show();
+          } else {
+            $('#register-error').text("Request could not be process.");
+            $('#register-error').show();
+          }
         })
 
       })
 
-
       $('#login-form').submit(function (e) {
         e.preventDefault();
 
-
         $.ajax({
-          url: "/user",
-          method: "GET",
+          url: "/session",
+          method: "POST",
           data: {
             username: $('#username').val(),
             password: $('#password').val()
           },
           success: function (data) {
-            window.location.replace(data);
+            window.location.replace('profile.html');
           },
-          fail: function () {
-            window.location.href = "error.html";
+          error: function () {
+            $('#login-error').show();
           }
         });
 

@@ -25,7 +25,7 @@ public class Bank {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "bank_name", nullable = false)
+	@Column(name = "bank_name", unique = true, nullable = false)
 	private String bankName;
 
 	@Column(name = "api_key", nullable = false)

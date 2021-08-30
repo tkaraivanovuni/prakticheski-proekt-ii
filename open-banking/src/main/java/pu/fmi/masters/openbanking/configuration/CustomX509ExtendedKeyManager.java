@@ -1,4 +1,4 @@
-package pu.fmi.masters.openbanking;
+package pu.fmi.masters.openbanking.configuration;
 
 import java.net.Socket;
 import java.security.Principal;

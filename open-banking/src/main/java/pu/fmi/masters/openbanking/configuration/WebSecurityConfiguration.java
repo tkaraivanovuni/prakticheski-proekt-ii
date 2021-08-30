@@ -1,4 +1,4 @@
-package pu.fmi.masters.openbanking;
+package pu.fmi.masters.openbanking.configuration;
 
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import pu.fmi.masters.openbanking.AppUserDetailService;
 
 /**
  * This class is used to configure the behavior of Spring Security for

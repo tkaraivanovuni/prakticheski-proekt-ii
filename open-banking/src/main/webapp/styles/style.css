@@ -71,3 +71,15 @@ form-class + form-class {
 	border-radius: 0.5rem;
 	display: none;
 }
+
+.table {
+    table-layout: fixed;
+}
+
+td {
+	word-wrap: break-word;
+}
+
+.far {
+    cursor: pointer;
+}

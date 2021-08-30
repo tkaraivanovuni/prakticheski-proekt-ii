@@ -44,8 +44,8 @@ public class AccountInfoRequestService {
 	 * This method sends a request for the list of accessible accounts to the
 	 * {@link Bank} resource server and returns the response.
 	 * 
-	 * @param token - string representing authorization token.
-	 * @param bankId - id of the bank.
+	 * @param token     - string representing authorization token.
+	 * @param bankId    - id of the bank.
 	 * @param requestId - id of the request.
 	 * @return - AccountListDto representing the response.
 	 * @throws ClientProtocolException
@@ -59,39 +59,37 @@ public class AccountInfoRequestService {
 		}
 		String url = optionalBank.get().getApiLink() + "accounts";
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add("x-ibm-client-id", "083ec7a8-584a-4e61-a7b0-17f8e44bfb38");
+		httpHeaders.add("x-ibm-client-id", optionalBank.get().getApiKey());
 		httpHeaders.add("authorization", "Bearer " + token);
 		httpHeaders.add("x-request-id", requestId);
 		HttpEntity<String> entity = new HttpEntity<String>(httpHeaders);
 		return restTemplate.exchange(url, HttpMethod.GET, entity, AccountsListDto.class);
 	}
-	
+
 	/**
 	 * This method sends a request for the list of accessible accounts to the
 	 * {@link Bank} resource server and returns the response.
 	 * 
-	 * @param token - string representing authorization token.
-	 * @param bankId - id of the bank.
+	 * @param token     - string representing authorization token.
+	 * @param bankId    - id of the bank.
 	 * @param requestId - id of the request.
 	 * @return - AccountListDto representing the response.
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public ResponseEntity<AccountBalanceDto> requestAccountBalance(String token, int bankId, String requestId, String iban)
-			throws ClientProtocolException, IOException {
+	public ResponseEntity<AccountBalanceDto> requestAccountBalance(String token, int bankId, String requestId,
+			String iban) throws ClientProtocolException, IOException {
 		Optional<Bank> optionalBank = bankRepo.findById(bankId);
 		if (!optionalBank.isPresent()) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
 		String url = optionalBank.get().getApiLink() + "accounts/" + iban + "/balances";
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add("x-ibm-client-id", "083ec7a8-584a-4e61-a7b0-17f8e44bfb38");
+		httpHeaders.add("x-ibm-client-id", optionalBank.get().getApiKey());
 		httpHeaders.add("authorization", "Bearer " + token);
 		httpHeaders.add("x-request-id", requestId);
 		HttpEntity<String> entity = new HttpEntity<String>(httpHeaders);
 		return restTemplate.exchange(url, HttpMethod.GET, entity, AccountBalanceDto.class);
 	}
-	
-	
 
 }

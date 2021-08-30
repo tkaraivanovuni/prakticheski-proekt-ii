@@ -48,7 +48,7 @@ public class OauthRequestService {
 		StringBuilder requestBuilder = new StringBuilder(bank.getAuthLink());
 		requestBuilder.append("?response_type=code");
 		requestBuilder.append("&client_id=" + bank.getApiKey());
-		requestBuilder.append("&redirect_uri=https://localhost:8443/callback");
+		requestBuilder.append("&redirect_uri=https://openbanking.com:8443/callback");
 		requestBuilder.append("&scope=" + scope);
 		requestBuilder.append("&state=" + state);
 		return requestBuilder.toString();
@@ -66,11 +66,12 @@ public class OauthRequestService {
 		MultiValueMap<String, String> bodyMap = new LinkedMultiValueMap<String, String>();
 		bodyMap.add("grant_type", "authorization_code");
 		bodyMap.add("code", code);
-		bodyMap.add("redirect_uri", "https://localhost:8443/callback");
+		bodyMap.add("redirect_uri", "https://openbanking.com:8443/callback");
 		bodyMap.add("client_id", bank.getApiKey());
 		bodyMap.add("client_secret", bank.getSecret());
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(bodyMap, headers);
 		ResponseEntity<TokenResponseDto> response = restTemplate.postForEntity(bank.getTokenLink(), request, TokenResponseDto.class);
+		System.out.println(response.getBody().getExpires_in());
 		return response.getBody().getAccess_token();
 	}
 

@@ -1,4 +1,4 @@
-package pu.fmi.masters.openbanking;
+package pu.fmi.masters.openbanking.configuration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
