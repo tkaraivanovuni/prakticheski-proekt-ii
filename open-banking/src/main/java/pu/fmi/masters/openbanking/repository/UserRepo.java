@@ -14,6 +14,14 @@ import pu.fmi.masters.openbanking.model.User;
 public interface UserRepo extends JpaRepository<User, Integer> {
 
 	/**
+	 * Retrieves a user by the id.
+	 * 
+	 * @param id - id to search by.
+	 * @return - User with matching id.
+	 */
+	Optional<User> findById(int id);
+
+	/**
 	 * This method retrieves a {@link User} by its username and password.
 	 * 
 	 * @param username - username to match.
