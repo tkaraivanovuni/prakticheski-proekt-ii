@@ -50,7 +50,7 @@ public class PaymentInitiationController {
 			@RequestParam(value = "creditor_iban") String creditorIban,
 			@RequestParam(value = "creditor_name") String creditorName, HttpSession session,
 			HttpServletRequest request) {
-		String userIpAddress = (request.getRemoteAddr());
+		String userIpAddress = getClientIp(request);
 		if (session.getAttribute("payment_token") == null) {
 			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(Integer.parseInt(bankId), scope, state),
 					HttpStatus.TEMPORARY_REDIRECT);
@@ -59,14 +59,14 @@ public class PaymentInitiationController {
 		ResponseEntity<PaymentResponseDto> response = null;
 		try {
 			response = paymentService.initiatePayment((String) session.getAttribute("payment_token"), Integer.parseInt(bankId), requestId,
-					"46.10.64.35", debitorIban, amount, currency, creditorIban, creditorName);
+					userIpAddress, debitorIban, amount, currency, creditorIban, creditorName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (response == null) {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.GATEWAY_TIMEOUT);
 		}
-		if (response.getStatusCodeValue() == 201) {
+		if (response.getStatusCodeValue() == 200 || response.getStatusCodeValue() == 201) {
 			return new ResponseEntity<>(response.getBody(), HttpStatus.CREATED);
 		} else if (response.getStatusCodeValue() == 400) {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.BAD_REQUEST);
@@ -79,5 +79,19 @@ public class PaymentInitiationController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	private String getClientIp(HttpServletRequest request) {
+
+        String remoteAddr = "";
+
+        if (request != null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddr == null || "".equals(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+        }
+
+        return remoteAddr;
+    }
 
 }
