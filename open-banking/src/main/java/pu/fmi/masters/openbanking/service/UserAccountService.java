@@ -2,10 +2,9 @@ package pu.fmi.masters.openbanking.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -29,14 +28,29 @@ public class UserAccountService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Setter
-	private Map<Integer, Map<String, String>> admins = new HashMap();
-	
+	private Map<Integer, Map<String, String>> admins = new HashMap<>();
+
 	@PostConstruct
 	private void initAdmin() {
-		admins.forEach((key, value) -> userRepo.save(new User(key, value.get("username"), value.get("email"), hashPassword(value.get("password")), Role.ADMIN)));
+		admins.forEach((key, value) -> userRepo.save(new User(key, value.get("username"), value.get("email"),
+				hashPassword(value.get("password")), Role.ADMIN)));
 		userRepo.flush();
+	}
+
+	/**
+	 * Retrives a user by id.
+	 * 
+	 * @param id - int representing id.
+	 * @return - a matching user.
+	 */
+	public User retrieveById(int id) {
+		Optional<User> optionalUser = userRepo.findById(id);
+		if (!optionalUser.isPresent()) {
+			throw new IllegalArgumentException("Wrong user id!");
+		}
+		return optionalUser.get();
 	}
 
 	/**
@@ -50,7 +64,7 @@ public class UserAccountService {
 		user.setRole(Role.USER);
 		return userRepo.saveAndFlush(user);
 	}
-	
+
 	/**
 	 * This method handles adding a new admin.
 	 * 
@@ -62,12 +76,40 @@ public class UserAccountService {
 		user.setRole(Role.ADMIN);
 		return userRepo.saveAndFlush(user);
 	}
-	
+
+	/**
+	 * Updates the user with the new values.
+	 * 
+	 * @param user    - user to be updated.
+	 * @param userDto - new user data.
+	 * @return - the updated user.
+	 */
 	public User updateUser(User user, UserDto userDto) {
 		user.setUsername(userDto.getUsername());
 		user.setEmail(userDto.getEmail());
 		user.setPassword(hashPassword(userDto.getPassword()));
 		return userRepo.saveAndFlush(user);
+	}
+
+	/**
+	 * Saves and flushes the user entity.
+	 * 
+	 * @param user - user to be saved.
+	 * @return - the saved user.
+	 */
+	public User updateUser(User user) {
+		return this.userRepo.saveAndFlush(user);
+	}
+
+	/**
+	 * Handles deleting a user by id.
+	 * 
+	 * @param userId - int representing user id to be deleted.
+	 * @return - true if successful.
+	 */
+	public Boolean deleteUser(int userId) {
+		userRepo.deleteById(userId);
+		return true;
 	}
 
 	private String hashPassword(String password) {
@@ -84,7 +126,5 @@ public class UserAccountService {
 		}
 		return result.toString();
 	}
-
-	
 
 }

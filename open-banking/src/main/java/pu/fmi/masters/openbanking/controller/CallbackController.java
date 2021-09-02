@@ -44,7 +44,6 @@ public class CallbackController {
 			@RequestParam(value = "state") String state, HttpSession httpSession) {
 		Optional<Bank> bankOptional = bankRepo.findById((Integer) httpSession.getAttribute("bank_id"));
 		Bank bank = bankOptional.get();
-		System.out.println(code);
 		String token = oauthRequestService.requestOauthToken(bank, code);
 		if (scope.contains("pis.sandbox")) {
 			httpSession.setAttribute("payment_token", token);

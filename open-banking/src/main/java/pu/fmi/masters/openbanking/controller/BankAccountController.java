@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import pu.fmi.masters.openbanking.repository.BankAccountRepo;
 import pu.fmi.masters.openbanking.repository.BankRepo;
 import pu.fmi.masters.openbanking.service.AccountInfoRequestService;
 import pu.fmi.masters.openbanking.service.OauthRequestService;
+import pu.fmi.masters.openbanking.service.UserAccountService;
 
 /**
  * This class handles viewing and adding {@link BankAccount} objects.
@@ -43,6 +45,7 @@ public class BankAccountController {
 	private OauthRequestService oauthRequestService;
 	private BankAccountRepo bankAccountRepo;
 	private BankRepo bankRepo;
+	private UserAccountService userAccountService;
 
 	/**
 	 * Constructor.
@@ -52,11 +55,12 @@ public class BankAccountController {
 	 */
 	@Autowired
 	public BankAccountController(BankAccountRepo bankAccountRepo, BankRepo bankRepo,
-			OauthRequestService oauthRequestService, AccountInfoRequestService accountInfoRequestService) {
+			OauthRequestService oauthRequestService, AccountInfoRequestService accountInfoRequestService, UserAccountService userAccountService) {
 		this.bankAccountRepo = bankAccountRepo;
 		this.bankRepo = bankRepo;
 		this.oauthRequestService = oauthRequestService;
 		this.accountInfoRequestService = accountInfoRequestService;
+		this.userAccountService = userAccountService;
 	}
 
 	/**
@@ -73,8 +77,8 @@ public class BankAccountController {
 			@RequestParam(value = "account_number") String accountNumber,
 			@RequestParam(value = "currency") String currency, @RequestParam(value = "product") String product,
 			HttpSession session) {
-
-		User user = (User) session.getAttribute("user");
+		int userId = (Integer) session.getAttribute("user_id");
+		User user = userAccountService.retrieveById(userId);
 		Optional<Bank> optionalBank = bankRepo.findById(Integer.parseInt(bankName));
 		if (!optionalBank.isPresent()) {
 			throw new InvalidArgumentException("Bank not found!");
@@ -110,17 +114,20 @@ public class BankAccountController {
 	 */
 	@GetMapping(path = "/bank-account")
 	public Set<BankAccount> getBankAccounts(HttpSession session) {
-		User user = (User) session.getAttribute("user");
+		int userId = (Integer) session.getAttribute("user_id");
+		User user = userAccountService.retrieveById(userId);
 		return user.getAccounts();
 	}
 	
 	@DeleteMapping(path = "/bank-account/{iban}")
+	@Transactional
 	public ResponseEntity<String> deleteAccount(@PathVariable(value = "iban") String iban, HttpSession session) {
 		BankAccount bankAccount = bankAccountRepo.findByAccountNumber(iban);
 		if (bankAccount != null) {
-			bankAccount.setUser(null);
-			bankAccount.setBank(null);
-			bankAccountRepo.delete(bankAccount);
+			User user = bankAccount.getUser();
+			if (user.deleteBankAccount(bankAccount) == false) {
+				throw new IllegalArgumentException("User could not be updated");
+			};
 			return new ResponseEntity<>("Deleted", HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Wrong iban", HttpStatus.BAD_REQUEST);
@@ -210,7 +217,7 @@ public class BankAccountController {
 			e.printStackTrace();
 		}
 		if (response == null) {
-			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.GATEWAY_TIMEOUT);
+			return new ResponseEntity<>("Request timed out!", HttpStatus.GATEWAY_TIMEOUT);
 		}
 		if (response.getStatusCodeValue() == 200) {
 			return new ResponseEntity<>(response.getBody(), HttpStatus.OK);

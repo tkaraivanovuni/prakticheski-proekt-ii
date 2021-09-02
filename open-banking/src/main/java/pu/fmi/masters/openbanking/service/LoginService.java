@@ -4,20 +4,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-import javax.servlet.http.HttpSession;
-
 import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import pu.fmi.masters.openbanking.configuration.WebSecurityConfiguration;
 import pu.fmi.masters.openbanking.dto.LoginDto;
 import pu.fmi.masters.openbanking.model.User;
 import pu.fmi.masters.openbanking.repository.UserRepo;
@@ -29,13 +19,11 @@ import pu.fmi.masters.openbanking.repository.UserRepo;
 public class LoginService {
 	
 	private final UserRepo userRepo;
-	private final WebSecurityConfiguration webSecurityConfiguration;
 	private final UserAuthorizationService userAuthorizationService;
 	
 	@Autowired
-	public LoginService(UserRepo userRepo, WebSecurityConfiguration webSecurityConfiguration, UserAuthorizationService userAuthorizationService) {
+	public LoginService(UserRepo userRepo, UserAuthorizationService userAuthorizationService) {
 		this.userRepo = userRepo;
-		this.webSecurityConfiguration = webSecurityConfiguration;
 		this.userAuthorizationService = userAuthorizationService;
 	}
 	

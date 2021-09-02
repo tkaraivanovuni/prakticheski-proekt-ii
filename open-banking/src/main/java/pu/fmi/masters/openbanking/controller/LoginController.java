@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import org.openqa.selenium.InvalidArgumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,8 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -28,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import pu.fmi.masters.openbanking.configuration.WebSecurityConfiguration;
 import pu.fmi.masters.openbanking.dto.LoginDto;
-import pu.fmi.masters.openbanking.dto.UserDto;
 import pu.fmi.masters.openbanking.model.Role;
 import pu.fmi.masters.openbanking.model.User;
 import pu.fmi.masters.openbanking.repository.UserRepo;
@@ -59,18 +55,6 @@ public class LoginController {
 		this.webSecurityConfiguration = webSecurityConfiguration;
 		this.userAccountService = userAccountService;
 	}
-	
-	/**
-	 * This method handles requests for getting user data.
-	 * 
-	 * @param session - the current session.
-	 * @return - {@link User} data.
-	 */
-	@GetMapping(path = "/profile")
-	public User getUserInfo(HttpSession session) {
-		User user = (User) session.getAttribute("user");
-		return user;
-	}
 
 	/**
 	 * This method handles user login.
@@ -87,7 +71,7 @@ public class LoginController {
 			throw new InvalidArgumentException("Wrong username or password!");
 		}
 		User user = optionalUser.get();
-		session.setAttribute("user", user);
+		session.setAttribute("user_id", user.getId());
 		try {
 			UserDetails userDetails = webSecurityConfiguration.userDetailsServiceBean()
 					.loadUserByUsername(user.getUsername());
@@ -137,7 +121,7 @@ public class LoginController {
 		if (!user.getRole().equals(Role.ADMIN)) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "More privileges required!");
 		}
-		session.setAttribute("user", user);
+		session.setAttribute("user_id", user.getId());
 		try {
 			UserDetails userDetails = webSecurityConfiguration.userDetailsServiceBean()
 					.loadUserByUsername(user.getUsername());
@@ -179,7 +163,8 @@ public class LoginController {
 	@GetMapping(path = "/authorization")
 	public ResponseEntity<Integer> isAuthorized(HttpSession session) {
 
-		User user = (User) session.getAttribute("user");
+		int userId = (Integer) session.getAttribute("user_id");
+		User user = userAccountService.retrieveById(userId);
 
 		if (user != null) {
 			return new ResponseEntity<>(user.getId(), HttpStatus.OK);
@@ -198,7 +183,8 @@ public class LoginController {
 	@GetMapping(path = "/authorization/admin")
 	public ResponseEntity<Integer> isAdmin(HttpSession session) {
 
-		User user = (User) session.getAttribute("user");
+		int userId = (Integer) session.getAttribute("user_id");
+		User user = userAccountService.retrieveById(userId);
 
 		if (user != null) {
 			if (user.getRole().equals(Role.ADMIN)) {
@@ -217,7 +203,8 @@ public class LoginController {
 	@DeleteMapping(path = "/session")
 	public ResponseEntity<Boolean> logout(HttpSession session) {
 
-		User user = (User) session.getAttribute("user");
+		int userId = (Integer) session.getAttribute("user_id");
+		User user = userAccountService.retrieveById(userId);
 
 		if (user != null) {
 			session.invalidate();

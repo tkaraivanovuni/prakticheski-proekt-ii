@@ -45,12 +45,12 @@
 			<div class="accounts-container p-2">
 
 				<div class="panel panel-default">
-					
+
 					<div class="d-flex justify-content-between" style="min-width: 100%">
-					
+
 						<button type="button" class="btn btn-primary mx-2" id="add-bank-button">Add bank</button>
 						<button type="button" class="btn btn-secondary" id="banks-logout">Logout</button>
-					
+
 					</div>
 					<table class="table table-striped table-bordered mt-2" id="bank-table">
 						<thead>
@@ -127,9 +127,10 @@
 					</div>
 					<div class="modal-footer">
 						<div class="alert alert-danger" role="alert" style="display: none" id="add-bank-modal-error">
-						  Request could not be completed.
+							Request could not be completed.
 						</div>
-						<button type="button" class="btn btn-warning" id="confirm-update" style="display: none">Update</button>
+						<button type="button" class="btn btn-warning" id="confirm-update"
+							style="display: none">Update</button>
 						<button type="submit" class="btn btn-success" form="add-bank-form" id="confirm-addition">Add
 							Bank</button>
 						<button type="button" class="btn btn-danger" id="close-add-bank-form"
@@ -179,7 +180,6 @@
 					method: "GET",
 					success: function (data) {
 						data.forEach(function (bank) {
-							console.log(bank);
 							showBank(bank.id, bank.bankName, bank.apiKey, bank.secret, bank.apiLink, bank.authLink, bank.tokenLink);
 						});
 					}, fail: function () {
@@ -205,10 +205,10 @@
 						$.ajax({
 							url: "/bank/" + id,
 							method: "DELETE",
-							success: function(data) {
+							success: function (data) {
 								window.location.href = "banks.html";
 							},
-							error: function(data) {
+							error: function (data) {
 								$('#delete-bank-modal-body').text('Request could not be processed!');
 								$('#confirm-delete-button').hide();
 							}
@@ -222,11 +222,11 @@
 					$('#confirm-update').show();
 					$('#add-bank-name').val(name);
 					$('#add-api-key').val(apiKey),
-					$('#add-secret').val(secret),
-					$('#add-api-url').val(apiLink),
-					$('#add-auth-url').val(authLink),
-					$('#add-token-url').val(tokenLink)
-					$('#confirm-update').click(function() {
+						$('#add-secret').val(secret),
+						$('#add-api-url').val(apiLink),
+						$('#add-auth-url').val(authLink),
+						$('#add-token-url').val(tokenLink)
+					$('#confirm-update').click(function () {
 						$.ajax({
 							url: "/bank/" + id,
 							method: "PUT",
@@ -238,16 +238,16 @@
 								auth_link: $('#add-auth-url').val(),
 								token_link: $('#add-token-url').val()
 							},
-							success: function(data) {
+							success: function (data) {
 								window.location.href = "banks.html";
 							},
-							error: function(data) {
+							error: function (data) {
 								$('#add-bank-modal-error').text('Incorrect bank data!');
 							}
 						})
 					})
 				})
-				
+
 
 				$('#banks-list').append(copiedBank);
 
@@ -280,7 +280,7 @@
 			$("#banks-logout").on("click", function () {
 				logoutAdmin();
 			});
-			
+
 			getAdministration();
 			displayAllBanks();
 

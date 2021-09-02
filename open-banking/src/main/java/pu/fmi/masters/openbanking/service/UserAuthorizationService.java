@@ -42,7 +42,7 @@ public class UserAuthorizationService {
 				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 				HttpSession httpSession = attr.getRequest().getSession(true);
 				httpSession.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-				httpSession.setAttribute("user", user);
+				httpSession.setAttribute("user_id", user.getId());
 			}
 			return "profile.html";
 		} catch (UsernameNotFoundException e) {

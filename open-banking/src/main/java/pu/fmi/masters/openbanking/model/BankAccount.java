@@ -1,6 +1,5 @@
 package pu.fmi.masters.openbanking.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,24 +11,27 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * This class provides the main characteristics of the {@link BankAccount}
  * data model.
  */
 @Entity
 @Table(name = "bank_accounts")
+@EqualsAndHashCode
 public class BankAccount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@JsonManagedReference
 	private User user;
 	
-	@ManyToOne(cascade=CascadeType.MERGE)
+	@ManyToOne
 	@JoinColumn(name="bank_id")
 	private Bank bank;
 

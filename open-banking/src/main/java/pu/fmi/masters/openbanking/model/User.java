@@ -1,11 +1,11 @@
 package pu.fmi.masters.openbanking.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -40,9 +40,9 @@ public class User {
 	@Enumerated//(EnumType.STRING)
 	private Role role;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonBackReference
-	private Set<BankAccount> accounts;
+	private Set<BankAccount> accounts = new HashSet<BankAccount>();
 
 	/**
 	 * No arguments constructor.
@@ -196,6 +196,16 @@ public class User {
 	 */
 	public void setRole(Role role) {
 		this.role = role;
+	}
+	
+	/**
+	 * This method removes a bank account.
+	 * 
+	 * @param bankAccount - bank account to be removed.
+	 * @return - boolean representing the outcome.
+	 */
+	public boolean deleteBankAccount(BankAccount bankAccount) {
+		return this.accounts.remove(bankAccount);
 	}
 
 }

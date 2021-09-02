@@ -1,191 +1,399 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>OpenBanking</title>
 
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<head>
+    <title>OpenBanking</title>
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="./styles/style.css">
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-		
-		<script src="js/main.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    </head>
-    <body style="background-color: rgb(220, 220, 220)">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
 
-        <div class="profile-page">
+    <script src="js/main.js"></script>
+    <script src="https://kit.fontawesome.com/2126b9dc6e.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
-            <div class="container">
+</head>
 
-                <header>
-                
-                    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-1">
-                        <a class="navbar-brand" href="#">
-                            <img src="./assets/AppIcon.png" alt="OpenBanking" class="img-fluid">
-                        </a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
-                      
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+<body>
 
-                            <ul class="nav navbar-nav navbar-right mr-auto ml-auto">
-                                <li>
-                                    <h1><span>OpenBanking</span></h1>
-                                </li>
-                            </ul>
+    <div class="profile-page" style="min-height: 100vh;">
 
-                            <ul class="nav navbar-nav navbar-right ml-auto">
-                                <li class="nav-item active">
-                                    <a class="nav-link" href="#" id="logout">Logout </a>
-                                </li>
-                            </ul>
-                        </div>
-                      </nav>
-                
-                </header>
+        <div class="container d-flex flex-column" style="min-height: 100vh;">
 
-                <div class="container">
+            <div class="col-12 my-3">
+                <div class="d-flex justify-content-between" id="logout" style="cursor: pointer; width: 100%;">
+                    <h1 style="text-shadow: 2px 2px silver; cursor: pointer; color: dodgerblue;">OpenBanking</h1>
+                    <i class="fas fa-sign-out-alt" style="opacity: 0.5;"> Logout</i>
+                </div>
+                <span style="color: silver"><i>All your accounts in one place!</i></span>
+            </div>
 
-                    <div class="row">
+            <nav>
 
-                        <div class="col-4 p-1">
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
 
-                            <div class="profile-container p-2">
+                    <a class="nav-item nav-link active" id="nav-accounts-tab" data-toggle="tab" href="#nav-accounts"
+                        role="tab" aria-controls="nav-accounts" aria-selected="true">My Accounts</a>
 
-                                <h3>Profile</h3>
-        
-                                <form id="profile-form">
-                                
-                                	<div class="row">
-                                        
-                                        <div class="form-group col-sm-8">
-                                            <label for="update-username">Username</label>
-                                            <input type="text" class="form-control" id="update-username" placeholder="Username" value="username">
-                                        </div>
-            
-                                    </div>
-                                    
-                                    <div class="row">
-                                        
-                                        <div class="form-group col-sm-8">
-                                            <label for="update-email">Email</label>
-                                            <input type="email" class="form-control" id="update-email" placeholder="example@gmail.com" value="example@gmail.com">
-                                        </div>
-            
-                                    </div>
-        
-                                    <div class="row">
-                                       <div class="form-group col-sm-6">
-                                           <label for="update-pass">Password</label>
-                                           <input type="password" class="form-control" id="update-password" placeholder="Password" value="">
-                                       </div>
-                                       <div class="form-group col-sm-6">
-                                           <label for="confirm-update-pass">Repeat Password</label>
-                                           <input type="password" class="form-control" id="confirm-update-password" placeholder="Repeat Password" value="">
-                                       </div>
-                                    </div>
-            
-                                </form>
-    
-                                <div class="panel-footer">
-                                    <button type="button" class="btn btn-secondary pull-right" id="update-info"> Update </button>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+                        aria-controls="nav-profile" aria-selected="false">My Profile</a>
+
+                </div>
+
+            </nav>
+
+            <div class="tab-content" id="nav-tabContent">
+
+                <div class="tab-pane fade show active" id="nav-accounts" role="tabpanel"
+                    aria-labelledby="nav-accounts-tab">
+
+                    <div class="d-flex flex-column flex-md-row">
+
+                        <div class="p-2 col-sm-12 col-md-4" style="background-color: inherit;">
+
+                            <div class="card" style="width: 100%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Search Accounts</h5>
+                                    <p class="card-text">Don't see what you're looking for? You can search for your
+                                        account by following the link</p>
+                                    <a href="/search.html" class="card-link">Search</a>
                                 </div>
-            
+                            </div>
+
+                            <img src="./assets/Accounts.png" alt="Profile" class="img-responsive"
+                                style="max-width: 100%; max-height: 100%;">
+
+                        </div>
+
+                        <div class="list-group w-100 my-4 col-sm-12 col-md-8 p-2" id="saved-accounts-list">
+
+                            <div class="jumbotron jumbotron-fluid" id="accounts-placeholder"
+                                style="background-color:inherit; color: rgb(2, 117, 216)">
+                                <div class="container px-5">
+                                    <h6 class="display-4">Accounts you save will appear here for easy access!</h6>
+                                </div>
+                            </div>
+
+                            <div class="list-group-item list-group-item-action flex-column align-items-start"
+                                id="account-template" style="display: none;">
+
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h4 id="account-number-field">Account Number</h4>
+                                    <small id="currency-field">Currency</small>
+                                </div>
+
+                                <p id="bank-field">Bank Name</p>
+                                <p id="account-product-field">Product</p>
+
+                                <div class="row d-flex w-100 justify-content-end">
+
+                                    <button type="button" class="btn btn-info mx-2"
+                                        id="account-details-button">Details</button>
+
+
+                                    <button type="button" class="btn btn-danger mx-2"
+                                        id="delete-account-button">Delete</button>
+
+                                </div>
+
+
                             </div>
 
                         </div>
-        
-                        <div class="col-8 p-1">
-                        
-                        	<div class="image-container">
 
-              					<img src="./assets/AppLogo.png" alt="App Logo" class="mx-auto d-block img-fluid">
-
-            				</div>
-
-                            <div class="panel-footer">
-                                    <button type="button" class="btn btn-primary pull-right mt-5" id="accounts-button"> My Accounts </button>
-                            </div>
-        
-                        </div>
-    
                     </div>
 
                 </div>
 
-                <img src="./assets/FooterGraph.png" alt="Footer" class="img-fluid">
-            
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+                    <div class="d-flex flex-column flex-md-row">
+
+                        <div class="p-2 col-xs-12 col-md-4" style="background-color: inherit;">
+
+                            <form id="profile-form">
+
+                                <div class="row">
+
+                                    <div class="form-group col-sm-8">
+                                        <label for="update-username">Username</label>
+                                        <input type="text" class="form-control" id="update-username"
+                                            placeholder="Username" value="username">
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-sm-8">
+                                        <label for="update-email">Email</label>
+                                        <input type="email" class="form-control" id="update-email"
+                                            placeholder="example@gmail.com" value="example@gmail.com">
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label for="update-pass">Password</label>
+                                        <input type="password" class="form-control" id="update-password"
+                                            placeholder="Password" value="">
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="confirm-update-pass">Repeat Password</label>
+                                        <input type="password" class="form-control" id="confirm-update-password"
+                                            placeholder="Repeat Password" value="">
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            <div class="panel-footer" style="width: 100%;">
+
+                                <div class="d-flex flex-row justify-content-between" style="width: 100%;">
+                                    <button type="button" class="btn btn-primary" id="update-info"> Update
+                                    </button>
+
+                                    <button type="button" class="btn btn-danger" id="delete-user"> Delete
+                                    </button>
+                                </div>
+
+                                <div class="alert alert-danger mt-3" role="alert" id="profile-error"
+                                    style="display: none;">
+                                    Error
+                                </div>
+
+                                <div class="alert alert-success mt-3" role="alert" id="profile-success"
+                                    style="display: none;">
+                                    Success
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12 col-md-8 mt-auto my-md-auto">
+
+                            <img src="./assets/Profile.png" alt="Profile" class="img-responsive"
+                                style="max-width: 100%; max-height: 100%;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
-        
-      
 
-      <script>
-      
-      $(document).ready(function(){
-    	  
-    	  function showCurrentUser(){
-    		  
-    		  $.ajax({
-    			  url: "/profile",
-    			  method: "GET",
-    			  success: function(data){
-    				  $("#update-username").val(data.username),
-    				  $("#update-email").val(data.email);
-    			  }
-    		  });
-    		  
-    	  }
-    	  
-    	  $("#update-info").on("click", function(){
-    		  
-    		   username = $("#update-username").val();
-    		   email = $("#update-email").val();
-    		   password = $("#update-password").val();
-    		   repeatPassword = $("#confirm-update-password").val();
-    		   
-    		  
-    		   $.ajax({
-    			  url: "/profile",
-    			  method: "PUT",
-    			  data: { username: username, email: email, password: password, repeatPassword: repeatPassword},
-    			  complete: function(data){
-    				  if(data.status == 200){
-    					  alert("Details have been changed!"),
-    					  showCurrentUser();
-    				  }else {
-    					  alert("Details could not be changed!")
-    				  }
-    				  
-    			  }
-    		   });
-    	  }); 
-    	  
-    	  $("#accounts-button").on("click", function() {
-    		  window.location.href = "accounts.html";
-    	  })
-    	  
-    	  $("#logout").on("click", function(){
-    		  logout();
-    	  });
-    	  
-    	  getAuthorization();
-    	  showCurrentUser();
-    	  
-      });
-    	  
-      </script>
-      
+        <div class="modal" tabindex="-1" role="dialog" id="delete-user-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="delete-user-modal-body">
+                        <p>Are you sure you want to delete your profile?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="confirm-delete-button">Delete</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  </body>
+        <div class="modal" tabindex="-1" role="dialog" id="delete-account-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="delete-account-modal-body">
+                        <p>Are you sure you want to delete this account?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="confirm-account-delete-button">Delete</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#delete-user').click(function () {
+                $('#delete-user-modal').modal();
+            });
+
+            $('#confirm-delete-button').click(function () {
+                $.ajax({
+                    url: "/user",
+                    method: "DELETE",
+                    success: function (data) {
+                        window.location.href = "index.html";
+                    },
+                    error: function (data) {
+                        $('#delete-user-modal-body').text('Request could not be processed!');
+                        $('#confirm-delete-button').hide();
+                        $(document).click(function () {
+                            getAuthorization();
+                        });
+                    }
+                })
+            })
+
+            $("#update-username").keyup(function () {
+                $('#profile-error').hide();
+            })
+
+            function showCurrentUser() {
+
+                $.ajax({
+                    url: "/user",
+                    method: "GET",
+                    success: function (data) {
+                        $("#update-username").val(data.username),
+                            $("#update-email").val(data.email);
+                    }, error: function (data) {
+                        window.location.replace('index.html');
+                    }
+                });
+
+            }
+
+            $("#update-info").on("click", function () {
+
+                username = $("#update-username").val();
+                email = $("#update-email").val();
+                password = $("#update-password").val();
+                repeatPassword = $("#confirm-update-password").val();
+
+                $.ajax({
+                    url: "/user",
+                    method: "PUT",
+                    data: { username: username, email: email, password: password, repeatPassword: repeatPassword },
+                    complete: function (data) {
+                        if (data.status == 200) {
+                            showCurrentUser();
+                            $("#profile-success").text("Details have been changed!");
+                            $("#profile-success").show();
+                            setTimeout(function () {
+                                $("#profile-success").hide();
+                            }, 1000)
+                        } else if (data.status === 409) {
+                            $("#profile-error").text("Username already exists!");
+                            $("#profile-error").show();
+                            setTimeout(function () {
+                                showCurrentUser();
+                                $("#profile-error").hide();
+                            }, 1000)
+                        } else {
+                            $("#profile-error").text("You need to log in first!");
+                            $("#profile-error").show();
+                            setTimeout(function () {
+                                window.location.replace("index.html");
+                            }, 1000)
+                        }
+
+                    }
+                });
+            });
+
+            $("#logout").on("click", function () {
+                logout();
+            });
+
+            function displayAllBankAccounts() {
+
+                $.ajax({
+                    url: "/bank-account/",
+                    method: "GET",
+                    success: function (data) {
+                        data.forEach(function (bank_account) {
+                            showSavedBankAccount(bank_account.bank.id, bank_account.accountNumber, bank_account.product, bank_account.currency);
+                            $('#accounts-placeholder').hide();
+                        });
+                    }, fail: function () {
+                        alert("Accounts could not be displayed");
+                    }
+                });
+            }
+
+            function showSavedBankAccount(bank, iban, product, currency) {
+                var copiedBankAccount = $('#account-template').clone();
+
+                copiedBankAccount.attr('id', '');
+                copiedBankAccount.find('#bank-field').text(bank);
+                copiedBankAccount.find('#account-number-field').text(iban);
+                copiedBankAccount.find('#account-product-field').text(product);
+                copiedBankAccount.find('#currency-field').text(currency);
+                copiedBankAccount.find('span').hide();
+
+                copiedBankAccount.find('#delete-account-button').click(function () {
+                    $('#delete-account-modal').modal();
+                    $('#confirm-account-delete-button').click(function () {
+
+                        $.ajax({
+                            url: "/bank-account/" + iban,
+                            method: "DELETE",
+                            success: function (data) {
+                                copiedBankAccount.hide();
+                                $('#confirm-account-delete-button').hide();
+                                $('#delete-account-modal-body').text('Account deleted!');
+                                $(document).click(function () {
+                                    $('#delete-account-modal-body').text('Are you sure you want to delete this account');
+                                    $('#confirm-account-delete-button').show();
+                                })
+                            },
+                            error: function (data) {
+                                $('#delete-account-modal-body').text('Request could not be processed!');
+                                $('#confirm-account-delete-button').hide();
+                            }
+                        });
+                    })
+                });
+
+                $('#saved-accounts-list').prepend(copiedBankAccount);
+
+                copiedBankAccount.show();
+
+            }
+
+            getAuthorization();
+            showCurrentUser();
+            displayAllBankAccounts();
+
+        });
+
+    </script>
+
+</body>
+
 </html>

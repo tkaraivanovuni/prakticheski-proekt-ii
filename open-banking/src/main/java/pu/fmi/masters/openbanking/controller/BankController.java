@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import pu.fmi.masters.openbanking.model.Bank;
-import pu.fmi.masters.openbanking.model.Role;
 import pu.fmi.masters.openbanking.model.User;
 import pu.fmi.masters.openbanking.service.BankInfoService;
+import pu.fmi.masters.openbanking.service.UserAccountService;
 
 /**
  * This class handles viewing and adding {@link Bank} objects.
@@ -28,11 +28,12 @@ import pu.fmi.masters.openbanking.service.BankInfoService;
 public class BankController {
 
 	private BankInfoService bankInfoService;
+	private UserAccountService userAccountService;
 
 	@Autowired
-	public BankController(BankInfoService bankInfoService) {
-		;
+	public BankController(BankInfoService bankInfoService, UserAccountService userAccountService) {
 		this.bankInfoService = bankInfoService;
+		this.userAccountService = userAccountService;
 	}
 
 	/**
@@ -54,7 +55,8 @@ public class BankController {
 			@RequestParam(value = "api_link") String apiLink, @RequestParam(value = "auth_link") String authLink,
 			@RequestParam(value = "token_link") String tokenLink, HttpSession session) {
 
-		User user = (User) session.getAttribute("user");
+		int userId = (Integer) session.getAttribute("user_id");
+		User user = userAccountService.retrieveById(userId);
 
 		if (user != null) {
 
@@ -86,7 +88,7 @@ public class BankController {
 	 */
 	@GetMapping(path = "/bank")
 	@Secured(value = { "ROLE_ADMIN" })
-	public List<Bank> getAllTransactions() {
+	public List<Bank> getAllBanks() {
 		return bankInfoService.getAllBanks();
 	}
 
@@ -139,6 +141,7 @@ public class BankController {
 	 * @return - true if successful, exception if not.
 	 */
 	@DeleteMapping(path = "/bank/{id}")
+	@Secured(value = { "ROLE_ADMIN" })
 	public Boolean deleteBank(@PathVariable int id) {
 		try {
 			this.bankInfoService.deleteBank(id);
