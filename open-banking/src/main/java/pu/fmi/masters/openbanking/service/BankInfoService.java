@@ -1,8 +1,11 @@
 package pu.fmi.masters.openbanking.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import pu.fmi.masters.openbanking.model.Bank;
 import pu.fmi.masters.openbanking.repository.BankRepo;
@@ -73,6 +76,20 @@ public class BankInfoService {
 	 */
 	public Bank editBank(Bank bank) {
 		return bankRepo.saveAndFlush(bank);
+	}
+	
+	/**
+	 * Retrieves a bank's name by its id.
+	 * 
+	 * @param id - id to search by.
+	 * @return - matching bank's name.
+	 */
+	public String retrieveBankName(String id) {
+		Optional<Bank> optionalBank = bankRepo.findById(Integer.parseInt(id));
+		if (!optionalBank.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No bank found with this id!");
+		}
+		return optionalBank.get().getBankName();
 	}
 
 }

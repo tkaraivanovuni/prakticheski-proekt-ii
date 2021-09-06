@@ -1,4 +1,4 @@
-package pu.fmi.masters.openbanking;
+package pu.fmi.masters.openbanking.service;
 
 import java.util.Optional;
 
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import pu.fmi.masters.openbanking.configuration.UserPrincipal;
 import pu.fmi.masters.openbanking.model.User;
 import pu.fmi.masters.openbanking.repository.UserRepo;
 

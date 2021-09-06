@@ -1,6 +1,7 @@
 var me;
 var selectedAccount;
 var selectedBank;
+var selectedBankName;
 
 function getSelectedAccount() {
 	return selectedAccount;
@@ -8,6 +9,7 @@ function getSelectedAccount() {
 
 function setSelectedAccount(iban) {
 	selectedAccount = iban;
+
 }
 
 function resetSelectedAccount() {
@@ -18,12 +20,29 @@ function getSelectedBank() {
 	return selectedBank;
 }
 
-function setSelectedAccount(bank_id) {
+async function setSelectedBank(bank_id, setBankName) {
 	selectedBank = bank_id;
+	await setBankName(bank_id);
 }
 
 function resetSelectedBank() {
 	selectedBank = null;
+}
+
+function setSelectedBankName(bank_id) {
+	$.ajax({
+		url: "/bank/" + bank_id,
+		method: "GET",
+		success: function (data) {
+			selectedBankName = data;
+		}, error: function () {
+			alert("No bank found with this id!");
+		}
+	})
+}
+
+function getSelectedBankName() {
+	return selectedBankName;
 }
 
 function getAuthorization() {
@@ -31,13 +50,10 @@ function getAuthorization() {
 		url: "/authorization",
 		method: "GET",
 		complete: function (data) {
-			switch (data.status) {
-				case 200:
-					me = data.responseJSON;
-					break;
-				case 401:
-					window.location.href = "index.html";
-					break;
+			if (data.status == 200) {
+				me = data.responseJSON;
+			} else {
+				window.location.href = "index.html";
 			}
 		},
 		fail: function () {
@@ -52,14 +68,10 @@ function getAdministration() {
 		url: "/authorization/admin",
 		method: "GET",
 		complete: function (data) {
-
-			switch (data.status) {
-				case 200:
-					me = data.responseJSON;
-					break;
-				case 401:
-					window.location.href = "index.html";
-					break;
+			if (data.status == 200) {
+				me = data.responseJSON;
+			} else {
+				window.location.href = "index.html";
 			}
 		},
 		fail: function () {

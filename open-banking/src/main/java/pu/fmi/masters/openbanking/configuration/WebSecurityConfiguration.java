@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import pu.fmi.masters.openbanking.AppUserDetailService;
+import pu.fmi.masters.openbanking.service.AppUserDetailService;
 
 /**
  * This class is used to configure the behavior of Spring Security for

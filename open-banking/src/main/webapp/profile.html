@@ -66,14 +66,8 @@
 
                         <div class="p-2 col-sm-12 col-md-4" style="background-color: inherit;">
 
-                            <div class="card" style="width: 100%;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Search Accounts</h5>
-                                    <p class="card-text">Don't see what you're looking for? You can search for your
-                                        account by following the link</p>
-                                    <a href="/search.html" class="card-link">Search</a>
-                                </div>
-                            </div>
+                            <a href="/search.html" class="btn btn-warning w-100 mt-4" role="button" aria-pressed="true"
+                                style="color:  white;">Find Accounts</a>
 
                             <img src="./assets/Accounts.png" alt="Profile" class="img-responsive"
                                 style="max-width: 100%; max-height: 100%;">
@@ -110,7 +104,6 @@
                                         id="delete-account-button">Delete</button>
 
                                 </div>
-
 
                             </div>
 
@@ -243,7 +236,6 @@
 
     </div>
 
-
     <script>
 
         $(document).ready(function () {
@@ -326,10 +318,6 @@
                 });
             });
 
-            $("#logout").on("click", function () {
-                logout();
-            });
-
             function displayAllBankAccounts() {
 
                 $.ajax({
@@ -337,7 +325,7 @@
                     method: "GET",
                     success: function (data) {
                         data.forEach(function (bank_account) {
-                            showSavedBankAccount(bank_account.bank.id, bank_account.accountNumber, bank_account.product, bank_account.currency);
+                            showSavedBankAccount(bank_account.bankName, bank_account.bankAccount.accountNumber, bank_account.bankAccount.product, bank_account.bankAccount.currency);
                             $('#accounts-placeholder').hide();
                         });
                     }, fail: function () {
@@ -385,6 +373,10 @@
                 copiedBankAccount.show();
 
             }
+
+            $("#logout").on("click", function () {
+                logout();
+            });
 
             getAuthorization();
             showCurrentUser();

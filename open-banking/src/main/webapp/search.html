@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OpenBanking</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css"> <!-- ??? -->
+
+    <script src="js/main.js"></script>
+    <script src="https://kit.fontawesome.com/2126b9dc6e.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="profile-page" style="min-height: 100vh;">
+
+        <div class="container d-flex flex-column" style="min-height: 100vh;">
+
+            <div class="col-12 my-3">
+                <div class="d-flex justify-content-between" id="logout" style="cursor: pointer; width: 100%;">
+                    <h1 style="text-shadow: 2px 2px silver; cursor: pointer; color: dodgerblue;">OpenBanking</h1>
+                    <i class="fas fa-sign-out-alt" style="opacity: 0.5;"> Logout</i>
+                </div>
+                <span style="color: silver"><i>All your accounts in one place!</i></span>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row">
+
+                <div class="d-flex flex-column justify-content-between p-2 col-sm-12 col-md-4">
+
+                    <div class="row">
+                        <select class="form-control w-75 selectpicker" data-live-search="true" required id="banks-list"
+                            data-style="btn-info">
+                            <option value="-" disabled="false" id="bank-template" selected>-Select
+                                Bank-
+                            </option>
+                        </select>
+                        <button type="button" class="btn btn-primary mx-2" id="check-bank-button"
+                            disabled>Check</button>
+                    </div>
+
+                    <div class="alert alert-danger mt-5" role="alert" style="display: none;" id="loading-error">
+                        Error
+                    </div>
+
+                    <div class="alert alert-success mt-5" role="alert" style="display: none;" id="saving-success">
+                        Account saved successfully!
+                    </div>
+
+                    <div class="row" id="accounts-success-info" style="display: none;">
+                        <i>Showing authorized accounts in&nbsp;</i>
+                        <i id="selected-bank-placeholder"> </i>
+                    </div>
+
+                </div>
+
+                <div class="d-none d-md-flex col-md-8">
+                    <img src="assets/Search.png" alt="Search" class="img-responsive"
+                        style="max-width: 100%; max-height: 100%;">
+                </div>
+
+            </div>
+
+            <div class="panel panel-default">
+
+                <div class="list-group w-100 my-4 col-12 p-2" id="bank-accounts-list">
+
+                    <div class="list-group-item my-1 list-group-item-action flex-column align-items-start"
+                        id="account-template" style="display: none;">
+
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4 id="account-number-field">Account Number</h4>
+                            <small id="currency-field">Currency</small>
+                        </div>
+
+                        <p id="account-product-field">Product</p>
+
+                        <div class="row d-flex w-100 justify-content-end">
+
+                            <button type="button" class="btn btn-info mx-2" id="account-details-button">Details</button>
+
+
+                            <button type="button" class="btn btn-warning mx-2" id="save-account-button">Save</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#check-bank-button').click(function () {
+                setSelectedBank($('#banks-list').val(), setSelectedBankName);
+                $('#selected-bank-placeholder').text($('#banks-list option:selected').text());
+                retrieveAccounts(getSelectedBank());
+            })
+
+            $('.form-control').change(function () {
+                $('#loading-error').hide();
+                $('#check-bank-button').attr('disabled', false);
+            })
+
+            function loadBanks() {
+
+                $.ajax({
+                    url: "/bank",
+                    method: "GET",
+                    success: function (data) {
+                        $('#loading-error').hide();
+                        data.forEach(function (bank) {
+                            showBank(bank.id, bank.bankName);
+                        });
+                        $('.selectpicker').selectpicker('refresh');
+                    }, error: function () {
+                        $('#loading-error').text("Banks could not be displayed");
+                        $('#loading-error').show();
+                    }
+                })
+
+            }
+
+            function showBank(id, bank_name) {
+                var copiedBank = $('#bank-template').clone();
+
+                copiedBank.attr('id', '');
+                copiedBank.attr('value', id);
+                copiedBank.attr('disabled', false);
+                copiedBank.attr('selected', false);
+                copiedBank.text(bank_name);
+
+                $('#banks-list').append(copiedBank);
+
+                copiedBank.show();
+
+            }
+
+            function retrieveAccounts(id) {
+                $.ajax({
+                    url: "/account?bank_id=" + id + "&scope=ais.sandbox&state=return.html",
+                    method: "GET",
+                    complete: function (data) {
+                        if (data.status === 200) {
+                            data.responseJSON.accounts.forEach(function (bank_account) {
+                                showBankAccount(id, bank_account.iban, bank_account.product, bank_account.currency);
+                            });
+                            $('#accounts-success-info').show();
+                        } else if (data.status === 307) {
+                            window.open(data.responseText);
+                        } else {
+                            $('#accounts-success-info').hide();
+                            $('#loading-error').text("Accounts could not be displayed");
+                            $('#loading-error').show();
+                        }
+                    }
+                });
+            }
+
+            function showBankAccount(bank, iban, product, currency) {
+                var copiedBankAccount = $('#account-template').clone();
+
+                copiedBankAccount.attr('id', '');
+                copiedBankAccount.find('#account-number-field').text(iban);
+                copiedBankAccount.find('#account-product-field').text(product);
+                copiedBankAccount.find('#currency-field').text(currency);
+                copiedBankAccount.find('span').hide();
+
+                copiedBankAccount.find('#save-account-button').click(function () {
+                    saveAccount(bank, iban, product, currency);
+                })
+
+                copiedBankAccount.find('#account-details-button').click(function () {
+                    retrieveBalance(bank, iban);
+                })
+
+                $('#bank-accounts-list').append(copiedBankAccount);
+
+                copiedBankAccount.show();
+
+            }
+
+            function saveAccount(bank, iban, product, currency) {
+                $.ajax({
+                    url: "/bank-account?bank_id=" + bank + "&account_number=" + iban + "&product=" + product + "&currency=" + currency,
+                    method: "POST",
+                }).done(function (data) {
+                    $('#saving-success').show();
+                    setTimeout(function () {
+                        $('#saving-success').hide();
+                    }, 3000)
+                }).fail(function (data) {
+                    $('#loading-error').text("Account has already been saved!");
+                    $('#loading-error').show();
+                    setTimeout(function () {
+                        $('#loading-error').hide();
+                    }, 3000)
+                })
+            }
+
+            $("#logout").on("click", function () {
+                logout();
+            });
+
+            getAuthorization();
+            loadBanks();
+
+        });
+
+    </script>
+
+</body>
+
+</html>

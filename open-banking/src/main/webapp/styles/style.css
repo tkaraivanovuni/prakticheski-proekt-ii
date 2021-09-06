@@ -83,3 +83,7 @@ td {
 .far {
     cursor: pointer;
 }
+
+.selectpicker {
+    background-color: red;
+}

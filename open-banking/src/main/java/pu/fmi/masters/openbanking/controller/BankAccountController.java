@@ -6,6 +6,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -23,9 +24,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import pu.fmi.masters.openbanking.dto.AccountBalanceDto;
 import pu.fmi.masters.openbanking.dto.AccountsListDto;
+import pu.fmi.masters.openbanking.dto.SavedBankAccountDto;
 import pu.fmi.masters.openbanking.model.Bank;
 import pu.fmi.masters.openbanking.model.BankAccount;
 import pu.fmi.masters.openbanking.model.User;
@@ -73,13 +76,13 @@ public class BankAccountController {
 	 * @return - string representing the outcome.
 	 */
 	@PostMapping(path = "/bank-account")
-	public String addBankAccount(@RequestParam(value = "bank_id") String bankName,
+	public String addBankAccount(@RequestParam(value = "bank_id") int bankId,
 			@RequestParam(value = "account_number") String accountNumber,
 			@RequestParam(value = "currency") String currency, @RequestParam(value = "product") String product,
 			HttpSession session) {
 		int userId = (Integer) session.getAttribute("user_id");
 		User user = userAccountService.retrieveById(userId);
-		Optional<Bank> optionalBank = bankRepo.findById(Integer.parseInt(bankName));
+		Optional<Bank> optionalBank = bankRepo.findById(bankId);
 		if (!optionalBank.isPresent()) {
 			throw new InvalidArgumentException("Bank not found!");
 		}
@@ -113,10 +116,15 @@ public class BankAccountController {
 	 * @return - list of {@link BankAccount}.
 	 */
 	@GetMapping(path = "/bank-account")
-	public Set<BankAccount> getBankAccounts(HttpSession session) {
+	public Set<SavedBankAccountDto> getBankAccounts(HttpSession session) {
 		int userId = (Integer) session.getAttribute("user_id");
 		User user = userAccountService.retrieveById(userId);
-		return user.getAccounts();
+		Set<SavedBankAccountDto> bankAccounts = new HashSet<>();
+		for (BankAccount bankAccount : user.getAccounts()) {
+			SavedBankAccountDto bankAccountDto = new SavedBankAccountDto(bankAccount, bankAccount.getBank().getBankName());
+			bankAccounts.add(bankAccountDto);
+		}
+		return bankAccounts;
 	}
 	
 	@DeleteMapping(path = "/bank-account/{iban}")
@@ -164,6 +172,9 @@ public class BankAccountController {
 					requestId);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (HttpClientErrorException e) {
+			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
+					HttpStatus.TEMPORARY_REDIRECT);
 		}
 		if (response == null) {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.GATEWAY_TIMEOUT);

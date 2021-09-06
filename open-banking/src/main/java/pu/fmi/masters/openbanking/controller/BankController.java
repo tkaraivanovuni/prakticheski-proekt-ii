@@ -105,6 +105,18 @@ public class BankController {
 	}
 
 	/**
+	 * Retrieves a bank's name by its id.
+	 * 
+	 * @param id - id to search by.
+	 * @return - matching bank name.
+	 */
+	@GetMapping(path = "/bank/{id}")
+	@Secured(value = { "ROLE_USER", "ROLE_ADMIN" })
+	public String getBankName(@PathVariable String id) {
+		return bankInfoService.retrieveBankName(id);
+	}
+
+	/**
 	 * Handles request for updating bank info.
 	 * 
 	 * @param id        - id of the bank.
