@@ -71,7 +71,6 @@ public class OauthRequestService {
 		bodyMap.add("client_secret", bank.getSecret());
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(bodyMap, headers);
 		ResponseEntity<TokenResponseDto> response = restTemplate.postForEntity(bank.getTokenLink(), request, TokenResponseDto.class);
-		System.out.println(response.getBody().getExpires_in());
 		return response.getBody().getAccess_token();
 	}
 

@@ -6,7 +6,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +31,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import pu.fmi.masters.openbanking.dto.AccountBalanceDto;
 import pu.fmi.masters.openbanking.dto.AccountsListDto;
 import pu.fmi.masters.openbanking.dto.BankAccountDto;
+import pu.fmi.masters.openbanking.dto.FrontendTransactionDto;
 import pu.fmi.masters.openbanking.dto.SavedBankAccountDto;
+import pu.fmi.masters.openbanking.dto.TransactionListDto;
 import pu.fmi.masters.openbanking.model.Bank;
 import pu.fmi.masters.openbanking.model.BankAccount;
 import pu.fmi.masters.openbanking.model.User;
@@ -59,7 +63,8 @@ public class BankAccountController {
 	 */
 	@Autowired
 	public BankAccountController(BankAccountRepo bankAccountRepo, BankRepo bankRepo,
-			OauthRequestService oauthRequestService, AccountInfoRequestService accountInfoRequestService, UserAccountService userAccountService) {
+			OauthRequestService oauthRequestService, AccountInfoRequestService accountInfoRequestService,
+			UserAccountService userAccountService) {
 		this.bankAccountRepo = bankAccountRepo;
 		this.bankRepo = bankRepo;
 		this.oauthRequestService = oauthRequestService;
@@ -122,12 +127,13 @@ public class BankAccountController {
 		User user = userAccountService.retrieveById(userId);
 		Set<SavedBankAccountDto> bankAccounts = new HashSet<>();
 		for (BankAccount bankAccount : user.getAccounts()) {
-			SavedBankAccountDto bankAccountDto = new SavedBankAccountDto(bankAccount, bankAccount.getBank().getBankName());
+			SavedBankAccountDto bankAccountDto = new SavedBankAccountDto(bankAccount,
+					bankAccount.getBank().getBankName());
 			bankAccounts.add(bankAccountDto);
 		}
 		return bankAccounts;
 	}
-	
+
 	@DeleteMapping(path = "/bank-account/{iban}")
 	@Transactional
 	public ResponseEntity<String> deleteAccount(@PathVariable(value = "iban") String iban, HttpSession session) {
@@ -136,7 +142,8 @@ public class BankAccountController {
 			User user = bankAccount.getUser();
 			if (user.deleteBankAccount(bankAccount) == false) {
 				throw new IllegalArgumentException("User could not be updated");
-			};
+			}
+			;
 			return new ResponseEntity<>("Deleted", HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Wrong iban", HttpStatus.BAD_REQUEST);
@@ -169,8 +176,8 @@ public class BankAccountController {
 		String requestId = UUID.randomUUID().toString();
 		ResponseEntity<AccountsListDto> response = null;
 		try {
-			response = accountInfoRequestService.requestAccountsList((String) session.getAttribute("account_token"), bankId,
-					requestId);
+			response = accountInfoRequestService.requestAccountsList((String) session.getAttribute("account_token"),
+					bankId, requestId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (HttpClientErrorException e) {
@@ -194,13 +201,27 @@ public class BankAccountController {
 			return new ResponseEntity<>("Request could not be handled by your bank!", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	//TODO
+
+	/**
+	 * This method retrieves account info.
+	 * 
+	 * @param iban    - IBAN of the account.
+	 * @param bankId  - bank id.
+	 * @param scope   - requested scope.
+	 * @param state   - state attribute.
+	 * @param session - current session.
+	 * @return - response containing the outcome.
+	 * @throws UnrecoverableKeyException
+	 * @throws KeyManagementException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws CertificateException
+	 */
 	@GetMapping(path = "/account/{iban}")
-	public ResponseEntity<Object> readBankAccountInfo(@PathVariable String iban, @RequestParam(value = "bank_id") int bankId,
-			@RequestParam(value = "scope") String scope, @RequestParam(value = "state") String state,
-			HttpSession session) throws UnrecoverableKeyException, KeyManagementException, KeyStoreException,
-			NoSuchAlgorithmException, CertificateException {
+	public ResponseEntity<Object> readBankAccountInfo(@PathVariable String iban,
+			@RequestParam(value = "bank_id") int bankId, @RequestParam(value = "scope") String scope,
+			@RequestParam(value = "state") String state, HttpSession session) throws UnrecoverableKeyException,
+			KeyManagementException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		session.setAttribute("bank_id", bankId);
 		if (session.getAttribute("account_token") == null) {
 			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
@@ -209,8 +230,8 @@ public class BankAccountController {
 		String requestId = UUID.randomUUID().toString();
 		ResponseEntity<BankAccountDto> response = null;
 		try {
-			response = accountInfoRequestService.requestAccountInfo((String) session.getAttribute("account_token"), bankId,
-					requestId, iban);
+			response = accountInfoRequestService.requestAccountInfo((String) session.getAttribute("account_token"),
+					bankId, requestId, iban);
 		} catch (HttpClientErrorException e) {
 			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
 					HttpStatus.TEMPORARY_REDIRECT);
@@ -260,8 +281,8 @@ public class BankAccountController {
 		String requestId = UUID.randomUUID().toString();
 		ResponseEntity<AccountBalanceDto> response = null;
 		try {
-			response = accountInfoRequestService.requestAccountBalance((String) session.getAttribute("account_token"), bankId,
-					requestId, iban);
+			response = accountInfoRequestService.requestAccountBalance((String) session.getAttribute("account_token"),
+					bankId, requestId, iban);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -270,6 +291,58 @@ public class BankAccountController {
 		}
 		if (response.getStatusCodeValue() == 200) {
 			return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
+		} else if (response.getStatusCodeValue() == 400) {
+			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.BAD_REQUEST);
+		} else if (response.getStatusCodeValue() == 401) {
+			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
+					HttpStatus.TEMPORARY_REDIRECT);
+		} else if (response.getStatusCodeValue() == 403) {
+			return new ResponseEntity<>("More privileges required to complete this action!", HttpStatus.FORBIDDEN);
+		} else {
+			return new ResponseEntity<>("Request could not be handled by your bank!", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * This method retrieves the account's balance.
+	 * 
+	 * @param bankId  - bank id.
+	 * @param scope   - requested scope.
+	 * @param state   - state attribute.
+	 * @param iban    - iban of the account.
+	 * @param session - current session.
+	 * @return - response with the outcome.
+	 * @throws UnrecoverableKeyException
+	 * @throws KeyManagementException
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws CertificateException
+	 */
+	@GetMapping(path = "/transactions")
+	public ResponseEntity<Object> readTransactions(@RequestParam(value = "bank_id") int bankId,
+			@RequestParam(value = "scope") String scope, @RequestParam(value = "state") String state,
+			@RequestParam(value = "iban") String iban, HttpSession session) throws UnrecoverableKeyException,
+			KeyManagementException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
+		session.setAttribute("bank_id", bankId);
+		if (session.getAttribute("account_token") == null) {
+			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
+					HttpStatus.TEMPORARY_REDIRECT);
+		}
+		String requestId = UUID.randomUUID().toString();
+		ResponseEntity<TransactionListDto> response = accountInfoRequestService
+				.requestTransactionsInfo((String) session.getAttribute("account_token"), bankId, requestId, iban);
+		if (response == null) {
+			return new ResponseEntity<>("Request timed out!", HttpStatus.GATEWAY_TIMEOUT);
+		}
+		if (response.getStatusCodeValue() == 200) {
+			List<FrontendTransactionDto> result = new ArrayList<>();
+			for (TransactionListDto.TransactionTo transaction : response.getBody().getTransactions().getBooked()) {
+				result.add(new FrontendTransactionDto(transaction));
+			}
+			for (TransactionListDto.TransactionTo transaction : response.getBody().getTransactions().getPending()) {
+				result.add(new FrontendTransactionDto(transaction));
+			}
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} else if (response.getStatusCodeValue() == 400) {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.BAD_REQUEST);
 		} else if (response.getStatusCodeValue() == 401) {

@@ -126,7 +126,8 @@
                                     <div class="form-group col-sm-8">
                                         <label for="update-username">Username</label>
                                         <input type="text" class="form-control" id="update-username"
-                                            placeholder="Username" value="username">
+                                            placeholder="Username" value="username"
+                                            style="box-shadow: 1px 1px 5px gray;">
                                     </div>
 
                                 </div>
@@ -136,7 +137,8 @@
                                     <div class="form-group col-sm-8">
                                         <label for="update-email">Email</label>
                                         <input type="email" class="form-control" id="update-email"
-                                            placeholder="example@gmail.com" value="example@gmail.com">
+                                            placeholder="example@gmail.com" value="example@gmail.com"
+                                            style="box-shadow: 1px 1px 5px gray;">
                                     </div>
 
                                 </div>
@@ -145,12 +147,13 @@
                                     <div class="form-group col-sm-6">
                                         <label for="update-pass">Password</label>
                                         <input type="password" class="form-control" id="update-password"
-                                            placeholder="Password" value="">
+                                            placeholder="Password" value="" style="box-shadow: 1px 1px 5px gray;">
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label for="confirm-update-pass">Repeat Password</label>
                                         <input type="password" class="form-control" id="confirm-update-password"
-                                            placeholder="Repeat Password" value="">
+                                            placeholder="Repeat Password" value=""
+                                            style="box-shadow: 1px 1px 5px gray;">
                                     </div>
                                 </div>
 
@@ -159,10 +162,12 @@
                             <div class="panel-footer" style="width: 100%;">
 
                                 <div class="d-flex flex-row justify-content-between" style="width: 100%;">
-                                    <button type="button" class="btn btn-primary" id="update-info"> Update
+                                    <button type="button" class="btn btn-primary" id="update-info"
+                                        style="box-shadow: 1px 1px 5px gray;"> Update
                                     </button>
 
-                                    <button type="button" class="btn btn-danger" id="delete-user"> Delete
+                                    <button type="button" class="btn btn-danger" id="delete-user"
+                                        style="box-shadow: 1px 1px 5px gray;"> Delete
                                     </button>
                                 </div>
 
@@ -325,7 +330,7 @@
                     method: "GET",
                     success: function (data) {
                         data.forEach(function (bank_account) {
-                            showSavedBankAccount(bank_account.bankName, bank_account.bankAccount.accountNumber, bank_account.bankAccount.product, bank_account.bankAccount.currency);
+                            showSavedBankAccount(bank_account.bankAccount.bank.id, bank_account.bankName, bank_account.bankAccount.accountNumber, bank_account.bankAccount.product, bank_account.bankAccount.currency);
                             $('#accounts-placeholder').hide();
                         });
                     }, fail: function () {
@@ -334,7 +339,7 @@
                 });
             }
 
-            function showSavedBankAccount(bank, iban, product, currency) {
+            function showSavedBankAccount(bank_id, bank, iban, product, currency) {
                 var copiedBankAccount = $('#account-template').clone();
 
                 copiedBankAccount.attr('id', '');
@@ -342,7 +347,11 @@
                 copiedBankAccount.find('#account-number-field').text(iban);
                 copiedBankAccount.find('#account-product-field').text(product);
                 copiedBankAccount.find('#currency-field').text(currency);
-                copiedBankAccount.find('span').hide();
+
+                copiedBankAccount.find('#account-details-button').click(function () {
+                    setSelectedAccount(iban);
+                    window.location.replace("/account.html?iban=" + iban + "&bank=" + bank_id + "&product=" + product + "&currency=" + currency);
+                })
 
                 copiedBankAccount.find('#delete-account-button').click(function () {
                     $('#delete-account-modal').modal();

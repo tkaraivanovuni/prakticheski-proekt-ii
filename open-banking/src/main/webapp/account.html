@@ -20,6 +20,7 @@
 	<script src="https://kit.fontawesome.com/2126b9dc6e.js" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.js"
 		integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
 		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
 		crossorigin="anonymous"></script>
@@ -60,14 +61,14 @@
 						</div>
 					</div>
 
-					<div class="d-flex flex-column justify-content-center align-items-center" style="flex: 1;">
+					<div class="d-flex flex-column mt-5 align-items-center" style="flex: 1;">
 						<div class="alert alert-danger" role="alert" style="display: none;" id="balance-error">
 							Could not display balance value.
 						</div>
 						<small style="color: coral; display: none;">You have currently chosen not to access your
 							balance. Click <a href="#" id="balance-link">here</a> to change your preferences</small>
 						<div id="view-balance" style="display: none;">
-							<div class="d-flex flex-column justify-content-center align-items-center">
+							<div class="d-flex flex-column mt-5">
 								<h5>Current Ballance:</h5>
 								<h1><span class="badge badge-primary" id="balance-value">543.21</span></h1>
 							</div>
@@ -79,8 +80,26 @@
 				<div class="col-sm-12 col-md-8 p-2">
 
 					<div class="d-flex flex-column justify-content-center align-items-center" style="flex: 1;">
-						<small style="color: coral;">You have currently chosen not to access your transactions. Click
+						<small style="color: coral; display: none;">You have currently chosen not to access your
+							transactions. Click
 							<a href="#" id="transactions-link">here</a> to change your preferences. </small>
+						<div class="alert alert-danger" role="alert" style="display: none;" id="transactions-error">
+							Could not display transactions.
+						</div>
+					</div>
+
+					<div class="d-flex flex-column justify-content-center align-items-center" style="flex: 1;">
+						<table class="table table-striped table-bordered mt-2 w-75 ml-auto" id="transactions-table"
+							style="box-shadow: 1px 1px 5px grey;">
+							<thead>
+								<tr>
+									<th data-field="name">Name</th>
+									<th data-field="amount">Amount</th>
+									<th data-field="currency">Currency</th>
+									<th data-field="valueDate">Date</th>
+								</tr>
+							</thead>
+						</table>
 					</div>
 
 					<div class="mt-auto">
@@ -164,6 +183,7 @@
 						complete: function (data) {
 							if (data.status === 200) {
 								retrieveBalance(getSelectedBank(), getSelectedAccount());
+								retrieveTransactions(getSelectedBank(), getSelectedAccount());
 							} else if (data.status === 307) {
 								window.open(data.responseText);
 							} else {
@@ -188,11 +208,33 @@
 							$('#balance-value').text(balance);
 							$('#view-balance').show();
 						} else if (data.status === 307) {
+							$
 							var a = document.getElementById('balance-link');
 							a.href = data.responseText;
 							a.show();
 						} else {
-							alert(data.status)
+							$('#balance-error').show();
+						}
+					}
+				});
+			}
+
+			function retrieveTransactions(bank, iban) {
+				$.ajax({
+					url: "/transactions?bank_id=" + bank + "&scope=ais.sandbox&state=return.html&iban=" + iban,
+					method: "GET",
+					complete: function (data) {
+						if (data.status === 200) {
+							$('#transactions-table').bootstrapTable({ data: data.responseJSON });
+							$('.fixed-table-loading').hide();
+						} else if (data.status === 307) {
+							$('#transactions-table').hide();
+							var a = document.getElementById('transactions-link');
+							a.href = data.responseText;
+							a.show();
+						} else {
+							$('#transactions-error').show();
+							$('#transactions-table').hide();
 						}
 					}
 				});
