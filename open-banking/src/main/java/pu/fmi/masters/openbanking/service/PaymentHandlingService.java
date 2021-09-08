@@ -34,7 +34,13 @@ public class PaymentHandlingService {
 		if (!optionalBank.isPresent()) {
 			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 		}
-		String url = optionalBank.get().getApiLink() + "payments/sepa-credit-transfers";
+		String paymentsEndpoint = "payments/";
+		if (currency.equals("BGN")) {
+			paymentsEndpoint = paymentsEndpoint.concat("domestic-credit-transfers-bgn");			
+		} else {
+			paymentsEndpoint = paymentsEndpoint.concat("sepa-credit-transfers");
+		}
+		String url = optionalBank.get().getApiLink() + paymentsEndpoint;
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 		httpHeaders.add("x-ibm-client-id", "083ec7a8-584a-4e61-a7b0-17f8e44bfb38");
@@ -62,6 +68,9 @@ public class PaymentHandlingService {
 		paymentBody.put("creditorAccount", creditorAccount);
 		paymentBody.put("creditorName", creditorName);
 		paymentBody.put("serviceLevel", "SEPA");
+		if (currency.equals("BGN")) {
+			paymentBody.put("remittanceInformationUnstructured", "Ref Number Merchant");
+		}
 		return paymentBody;
 	}
 

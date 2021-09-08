@@ -20,23 +20,23 @@ function getSelectedBank() {
 	return selectedBank;
 }
 
-async function setSelectedBank(bank_id, setBankName) {
+function setSelectedBank(bank_id) {
 	selectedBank = bank_id;
-	await setBankName(bank_id);
 }
 
 function resetSelectedBank() {
 	selectedBank = null;
 }
 
-function setSelectedBankName(bank_id) {
+function setSelectedBankName(bank_id, callback) {
 	$.ajax({
 		url: "/bank/" + bank_id,
 		method: "GET",
 		success: function (data) {
 			selectedBankName = data;
+			callback();
 		}, error: function () {
-			alert("No bank found with this id!");
+			alert("Error loading data!");
 		}
 	})
 }
@@ -59,7 +59,6 @@ function getAuthorization() {
 		fail: function () {
 			window.location.href = "index.html";
 		}
-
 	});
 }
 

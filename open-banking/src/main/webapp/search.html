@@ -88,7 +88,7 @@
                 <div class="list-group w-100 my-4 col-12 p-2" id="bank-accounts-list">
 
                     <div class="list-group-item my-1 list-group-item-action flex-column align-items-start"
-                        id="account-template" style="display: none;">
+                        id="account-template" style="display: none; box-shadow: 3px 3px 10px gray;">
 
                         <div class="d-flex w-100 justify-content-between">
                             <h4 id="account-number-field">Account Number</h4>
@@ -102,7 +102,7 @@
                             <button type="button" class="btn btn-info mx-2" id="account-details-button">Details</button>
 
 
-                            <button type="button" class="btn btn-warning mx-2" id="save-account-button">Save</button>
+                            <button type="button" class="btn btn-success mx-2" id="save-account-button">Save</button>
 
                         </div>
 
@@ -200,7 +200,8 @@
                 })
 
                 copiedBankAccount.find('#account-details-button').click(function () {
-                    retrieveBalance(bank, iban);
+                    setSelectedAccount(iban);
+                    window.location.replace("/account.html?iban=" + iban + "&bank=" + getSelectedBank() + "&product=" + product + "&currency=" + currency);
                 })
 
                 $('#bank-accounts-list').append(copiedBankAccount);

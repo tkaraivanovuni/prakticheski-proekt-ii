@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pu.fmi.masters.openbanking.dto.AccountBalanceDto;
 import pu.fmi.masters.openbanking.dto.AccountsListDto;
+import pu.fmi.masters.openbanking.dto.BankAccountDto;
 import pu.fmi.masters.openbanking.model.Bank;
 import pu.fmi.masters.openbanking.repository.BankRepo;
 
@@ -64,6 +65,30 @@ public class AccountInfoRequestService {
 		httpHeaders.add("x-request-id", requestId);
 		HttpEntity<String> entity = new HttpEntity<String>(httpHeaders);
 		return restTemplate.exchange(url, HttpMethod.GET, entity, AccountsListDto.class);
+	}
+
+	/**
+	 * This method sends a request for information about an account to the
+	 * {@link Bank} resource server and returns the response.
+	 * 
+	 * @param token     - OAuth token
+	 * @param bankId    - id of the respective bank
+	 * @param requestId - UUID of the request
+	 * @param iban      - IBAN of the respective account.
+	 * @return - response containing the result.
+	 */
+	public ResponseEntity<BankAccountDto> requestAccountInfo(String token, int bankId, String requestId, String iban) {
+		Optional<Bank> optionalBank = bankRepo.findById(bankId);
+		if (!optionalBank.isPresent()) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		String url = optionalBank.get().getApiLink() + "accounts/" + iban;
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add("x-ibm-client-id", optionalBank.get().getApiKey());
+		httpHeaders.add("authorization", "Bearer " + token);
+		httpHeaders.add("x-request-id", requestId);
+		HttpEntity<String> entity = new HttpEntity<String>(httpHeaders);
+		return restTemplate.exchange(url, HttpMethod.GET, entity, BankAccountDto.class);
 	}
 
 	/**

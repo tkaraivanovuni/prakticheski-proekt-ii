@@ -48,25 +48,40 @@
 				<div class="p-2 d-flex flex-column justify-content-between col-sm-12 col-md-4"
 					style="background-color: inherit;">
 
-					<div class="card">
+					<div class="card" style="box-shadow: 3px 3px 10px gray;">
 						<div class="card-body">
 							<h5 class="card-title my-3" id="account-iban">IBAN</h5>
 							<h6 class="card-subtitle my-3 text-muted" id="account-bank">Bank</h6>
 							<p class="card-text my-3" id="account-product">Product</p>
 							<div class="d-flex justify-content-between my-3">
 								<span id="account-currency">Currency</span>
-								<button class="btn btn-primary">Make Payment</button>
+								<button class="btn btn-info" id="make-payment-button">Make Payment</button>
 							</div>
 						</div>
 					</div>
 
-					<div class="d-flex flex-column justify-content-around" style="flex: 1;">
-						<button>Pl</button>
+					<div class="d-flex flex-column justify-content-center align-items-center" style="flex: 1;">
+						<div class="alert alert-danger" role="alert" style="display: none;" id="balance-error">
+							Could not display balance value.
+						</div>
+						<small style="color: coral; display: none;">You have currently chosen not to access your
+							balance. Click <a href="#" id="balance-link">here</a> to change your preferences</small>
+						<div id="view-balance" style="display: none;">
+							<div class="d-flex flex-column justify-content-center align-items-center">
+								<h5>Current Ballance:</h5>
+								<h1><span class="badge badge-primary" id="balance-value">543.21</span></h1>
+							</div>
+						</div>
 					</div>
 
 				</div>
 
 				<div class="col-sm-12 col-md-8 p-2">
+
+					<div class="d-flex flex-column justify-content-center align-items-center" style="flex: 1;">
+						<small style="color: coral;">You have currently chosen not to access your transactions. Click
+							<a href="#" id="transactions-link">here</a> to change your preferences. </small>
+					</div>
 
 					<div class="mt-auto">
 						<img src="./assets/Account.png" alt="Account" class="img-responsive"
@@ -80,6 +95,159 @@
 		</div>
 
 	</div>
+
+	<div class="modal" tabindex="-1" role="dialog" id="payment-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Make payment</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<form id="make-payment-form" action="payment" method="POST">
+						<div class="form-group">
+							<label for="amount-input">Amount</label> <input type="text" class="form-control"
+								id="amount-input" placeholder="0.00">
+						</div>
+						<div class="form-group">
+							<label for="creditor-iban-input">Receiver IBAN</label> <input type="text"
+								class="form-control" id="creditor-iban-input" placeholder="IBAN">
+						</div>
+						<div class="form-group">
+							<label for="creditor-name-input">Receiver name</label> <input type="text"
+								class="form-control" id="creditor-name-input" placeholder="Name">
+						</div>
+					</form>
+
+					<div class="alert alert-success" role="alert" id="payment-success" style="display: none">
+						Success!
+					</div>
+
+					<div class="alert alert-danger" role="alert" id="payment-failure" style="display: none">
+						Payment could not be processed!
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="confirm-payment-button">Confirm</button>
+					<button type="button" class="btn btn-danger" id="close-payment-form"
+						data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+
+		$(document).ready(function () {
+
+			const params = new URLSearchParams(window.location.search);
+
+			$('#make-payment-button').click(function () {
+				$('#payment-modal').modal();
+			});
+
+			function loadAccount() {
+				if (params.has('iban') && params.has('bank') && params.has('product') && params.has('currency')) {
+					setSelectedAccount(params.get('iban'));
+					setSelectedBank(params.get('bank'));
+					$('#account-iban').text(params.get('iban'));
+					$('#account-bank').text(getSelectedBankName());
+					$('#account-product').text(params.get('product'));
+					$('#account-currency').text(params.get('currency'));
+					$.ajax({
+						url: "/account/" + getSelectedAccount() + "?bank_id=" + getSelectedBank() + "&scope=ais.sandbox&state=return.html",
+						method: "GET",
+						complete: function (data) {
+							if (data.status === 200) {
+								retrieveBalance(getSelectedBank(), getSelectedAccount());
+							} else if (data.status === 307) {
+								window.open(data.responseText);
+							} else {
+								alert(data.status)
+							}
+						}
+					})
+				} else {
+					alert('Error');
+					window.history.back();
+				}
+				$('#account-bank').text(getSelectedBankName());
+			}
+
+			function retrieveBalance(bank, iban) {
+				$.ajax({
+					url: "/balance?bank_id=" + bank + "&scope=ais.sandbox&state=return.html&iban=" + iban,
+					method: "GET",
+					complete: function (data) {
+						if (data.status === 200) {
+							let balance = (data.responseJSON.balances[0].balanceAmount.amount) + " " + (data.responseJSON.balances[0].balanceAmount.currency);
+							$('#balance-value').text(balance);
+							$('#view-balance').show();
+						} else if (data.status === 307) {
+							var a = document.getElementById('balance-link');
+							a.href = data.responseText;
+							a.show();
+						} else {
+							alert(data.status)
+						}
+					}
+				});
+			}
+
+			$('#confirm-payment-button').click(function () {
+				let amount = $('#amount-input').val();
+				let creditorIban = $('#creditor-iban-input').val();
+				let creditorName = $('#creditor-name-input').val();
+				sendPayment(getSelectedBank(), getSelectedAccount(), $('#account-currency').text(), amount, creditorIban, creditorName);
+			})
+
+			function sendPayment(bank, iban, currency, amount, creditorIban, creditorName) {
+				$.ajax({
+					url: "/payment?bank_id=" + bank
+						+ "&scope=ais.sandbox pis.sandbox&state=return.html&debitor_iban=" + iban
+						+ "&amount=" + amount + "&currency=" + currency
+						+ "&creditor_iban=" + creditorIban + "&creditor_name=" + creditorName,
+					method: "POST",
+					complete: function (data) {
+						if (data.status === 201) {
+							$('#payment-success').text("Success! Transaction ID: " + data.responseJSON.paymentId);
+							$('#confirm-payment-button').hide();
+							$('#make-payment-form').hide();
+							$('#payment-success').show();
+							$(document).click(function () {
+								$('#confirm-payment-button').show();
+								$('#amount-input').val('');
+								$('#creditor-iban-input').val('');
+								$('#creditor-name-input').val('');
+								$('#make-payment-form').show();
+								$('#payment-success').hide();
+							})
+						} else if (data.status === 307) {
+							window.open(data.responseText);
+						} else {
+							$('#payment-failure').show();
+							$(document).click(function () {
+								$('#payment-failure').hide();
+							});
+						}
+					}
+				});
+			}
+
+			$("#logout").on("click", function () {
+				logout();
+			});
+
+			getAuthorization();
+			setSelectedBankName(params.get('bank'), loadAccount);
+
+		});
+
+	</script>
 
 </body>
 

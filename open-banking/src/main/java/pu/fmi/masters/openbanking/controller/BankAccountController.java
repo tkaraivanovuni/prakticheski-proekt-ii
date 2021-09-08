@@ -28,6 +28,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import pu.fmi.masters.openbanking.dto.AccountBalanceDto;
 import pu.fmi.masters.openbanking.dto.AccountsListDto;
+import pu.fmi.masters.openbanking.dto.BankAccountDto;
 import pu.fmi.masters.openbanking.dto.SavedBankAccountDto;
 import pu.fmi.masters.openbanking.model.Bank;
 import pu.fmi.masters.openbanking.model.BankAccount;
@@ -185,6 +186,43 @@ public class BankAccountController {
 			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.BAD_REQUEST);
 		} else if (response.getStatusCodeValue() == 401) {
 			System.out.println("unauthorized");
+			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
+					HttpStatus.TEMPORARY_REDIRECT);
+		} else if (response.getStatusCodeValue() == 403) {
+			return new ResponseEntity<>("More privileges required to complete this action!", HttpStatus.FORBIDDEN);
+		} else {
+			return new ResponseEntity<>("Request could not be handled by your bank!", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	//TODO
+	@GetMapping(path = "/account/{iban}")
+	public ResponseEntity<Object> readBankAccountInfo(@PathVariable String iban, @RequestParam(value = "bank_id") int bankId,
+			@RequestParam(value = "scope") String scope, @RequestParam(value = "state") String state,
+			HttpSession session) throws UnrecoverableKeyException, KeyManagementException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException {
+		session.setAttribute("bank_id", bankId);
+		if (session.getAttribute("account_token") == null) {
+			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
+					HttpStatus.TEMPORARY_REDIRECT);
+		}
+		String requestId = UUID.randomUUID().toString();
+		ResponseEntity<BankAccountDto> response = null;
+		try {
+			response = accountInfoRequestService.requestAccountInfo((String) session.getAttribute("account_token"), bankId,
+					requestId, iban);
+		} catch (HttpClientErrorException e) {
+			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
+					HttpStatus.TEMPORARY_REDIRECT);
+		}
+		if (response == null) {
+			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.GATEWAY_TIMEOUT);
+		}
+		if (response.getStatusCodeValue() == 200) {
+			return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
+		} else if (response.getStatusCodeValue() == 400) {
+			return new ResponseEntity<>("Request could not be completed as is!", HttpStatus.BAD_REQUEST);
+		} else if (response.getStatusCodeValue() == 401) {
 			return new ResponseEntity<>(oauthRequestService.createOauthCodeRequest(bankId, scope, state),
 					HttpStatus.TEMPORARY_REDIRECT);
 		} else if (response.getStatusCodeValue() == 403) {
